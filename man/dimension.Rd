@@ -4,6 +4,8 @@
 \description{
 Given an array, returns an array of the same size whose elements
 are sequentially numbered along the \eqn{i^{\rm th}}{i-th} dimension.
+
+Used by \code{magiccube.2np1}.
 }
 \usage{
 dimension(a, i)

@@ -1,11 +1,11 @@
-\name{min.max}
-\alias{min.max}
+\name{minmax}
+\alias{minmax}
 \title{are all elements of a vector identical?}
 \description{
 Returns TRUE if and only if all elements of a vector are identical.
 }
 \usage{
-min.max(x)
+minmax(x)
 }
 \arguments{
   \item{x}{Vector to be tested}

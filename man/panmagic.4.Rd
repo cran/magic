@@ -15,7 +15,7 @@ panmagic.4(vals = 2^(0:3))
     (0-15 in binary).}
 }
 
-\references{http://www.grogono.com/magic/index.php}
+\references{\url{http://www.grogono.com/magic/index.php}}
 \author{Robin K. S. Hankin}
 \examples{
 panmagic.4()

@@ -19,7 +19,7 @@ form \eqn{6n+1}{6n+1} and \eqn{6n-1}{6n-1} and found no exceptions;
 indeed, they all seem to be panmagic.  It is not clear to me 
 when the process works and when it doesn't.  
 }
-\references{\code{http://www.magic-squares.de/general/general.html}}
+\references{\url{http://www.magic-squares.de/general/general.html}}
 \author{Robin K. S. Hankin}
 \examples{
 magic.prime(7)

@@ -28,7 +28,6 @@ allsubhypercubes(a)
   }
 \seealso{\code{\link{is.perfect}}}
 \examples{
-  library(abind)
   a <- magichypercube.4n(1,d=4)
   allsubhypercubes(a)
 }

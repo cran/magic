@@ -1,18 +1,19 @@
 "allsubhypercubes" <-
 function (a) 
 {
+    require(abind)
     n <- dim(a)[1]
     d <- length(dim(a))
     tri <- c("", "i", "n-i+1")
-    repeated.string <- paste(rep(", tri", d - 1), collapse = "")
-    string <- paste("q <- expand.grid(tri", repeated.string, 
-        ")")
-    eval(parse(text = string))
+    q <- expand.grid(sapply(1:d, function(x) {
+        tri
+    }, simplify = FALSE))
     jj <- apply(apply(q, 2, paste), 1, paste, collapse = ",")
     wanted <- grep("i.*i", jj)
     jj <- jj[wanted]
     number.of.subhypercubes <- length(jj)
     f <- function(i, a, string) {
+        print(string)
         n <- dim(a)[1]
         execute.string <- paste("jj <- a[", string, "]", collapse = "")
         eval(parse(text = execute.string))
@@ -44,28 +45,27 @@ function (m)
         minors = minors))
 }
 "as.standard" <-
-function (m) 
+function (a) 
 {
-    n <- nrow(m)
-    if (is.null(n)) {
-        return(m)
-    }
-    rotate <- function(m, i = 1) {
-        i <- as.integer(i%%4)
-        while (i > 0) {
-            m <- t(m[nrow(m):1, ])
-            i <- i - 1
-        }
-        return(m)
-    }
-    corners <- c(m[1, 1], m[1, n], m[n, n], m[n, 1])
-    m <- rotate(m, which.min(corners) - 1)
-    if (m[1, 2] < m[2, 1]) {
-        return(m)
-    }
-    else {
-        return(t(m))
-    }
+    n <- dim(a)[1]
+    d <- length(dim(a))
+    j <- c(1, n)
+    repeated.string <- paste(rep(",j", d - 1), collapse = " ")
+    string <- paste("corner.coords <- expand.grid(j", repeated.string, 
+        ")")
+    eval(parse(text = string))
+    corner.coords <- as.matrix(corner.coords)
+    corners <- a[corner.coords]
+    pos.of.min <- rbind(corner.coords[which.min(a[corner.coords]), 
+        ])
+    f <- 1:n
+    b <- n:1
+    jj <- rep(NA, d)
+    jj[pos.of.min == 1] <- "f"
+    jj[pos.of.min > 1] <- "b"
+    string <- paste("a <- a[", paste(jj, collapse = ","), "]")
+    eval(parse(text = string))
+    return(aperm(a, order(-a[1 + diag(nrow = d)])))
 }
 "diag.off" <-
 function (a, offset = 0, nw.se = TRUE) 
@@ -77,8 +77,7 @@ function (a, offset = 0, nw.se = TRUE)
     else {
         indices <- cbind(1:n, n:1)
     }
-    jj <- sweep(indices, 2, c(0, offset), "+")%%n
-    jj[jj == 0] <- n
+    jj <- process(sweep(indices, 2, c(0, offset), "+"), n)
     return(a[jj])
 }
 "dimension" <-
@@ -90,10 +89,8 @@ function (a, i)
     permute <- c(i, (1:n)[-i])
     a <- aperm(a, permute)
     a[] <- p
-    a <- a%%d
-    a[a == 0] <- d
     permute[permute] <- 1:n
-    return(aperm(a, permute))
+    return(aperm(process(a, d), permute))
 }
 "eq" <-
 function (m1, m2) 
@@ -137,13 +134,13 @@ function (m1, m2)
 "is.associative" <-
 function (m) 
 {
-    is.magic(m) & min.max(c(m + rev(m), nrow(m)^2 + 1))
+    is.magic(m) & minmax(c(m + rev(m), nrow(m)^2 + 1))
 }
 "is.magic" <-
 function (m, give.answers = FALSE) 
 {
     jj <- allsums(m)
-    answer <- min.max(c(jj$rowsums, jj$colsums, jj$majors[1], 
+    answer <- minmax(c(jj$rowsums, jj$colsums, jj$majors[1], 
         jj$minors[1]))
     if (give.answers) {
         return(c(answer = answer, jj))
@@ -173,18 +170,18 @@ function (a)
     string <- paste("ans <- apply(expand.grid(b", repeated.string, 
         "),1,g)")
     eval(parse(text = string))
-    return(min.max(ans) & is.semimagichypercube(a))
+    return(minmax(ans) & is.semimagichypercube(a))
 }
 "is.normal" <-
 function (m) 
 {
-    min.max(c(1, diff(sort(m))))
+    minmax(c(1, diff(sort(m))))
 }
 "is.panmagic" <-
 function (m, give.answers = FALSE) 
 {
     jj <- allsums(m)
-    answer <- min.max(c(jj$rowsums, jj$colsums, jj$majors, jj$minors))
+    answer <- minmax(c(jj$rowsums, jj$colsums, jj$majors, jj$minors))
     if (give.answers == FALSE) {
         return(answer)
     }
@@ -195,6 +192,7 @@ function (m, give.answers = FALSE)
 "is.perfect" <-
 function (a) 
 {
+    require(abind)
     n <- dim(a)[1]
     d <- length(dim(a))
     magic.constant <- apply(a, 1:(d - 1), sum)[1]
@@ -213,7 +211,7 @@ function (a)
 function (m, give.answers = FALSE) 
 {
     jj <- allsums(m)
-    answer <- min.max(c(jj$rowsums, jj$colsums))
+    answer <- minmax(c(jj$rowsums, jj$colsums))
     if (give.answers) {
         return(c(answer = answer, jj))
     }
@@ -229,12 +227,12 @@ function (a)
     f <- function(i) {
         apply(a, (1:d)[-i], sum)
     }
-    return(min.max(sapply(1:d, f)))
+    return(minmax(sapply(1:d, f)))
 }
 "is.standard" <-
-function (m) 
+function (a) 
 {
-    min.max(m - as.standard(m))
+    minmax(a - as.standard(a))
 }
 "le" <-
 function (m1, m2) 
@@ -245,6 +243,35 @@ function (m1, m2)
 function (m1, m2) 
 {
     return((m1 %eq% m2) || (m1 %lt% m2))
+}
+"lozenge" <-
+function (m) 
+{
+    n <- 2 * m + 1
+    out <- matrix(NA, n, n)
+    jj <- cbind(m:-m, 0:(2 * m)) + 1
+    odd.a <- jj[1:(1 + m), ]
+    odd.b <- odd.a
+    odd.b[, 2] <- odd.b[, 2] + 1
+    odd.b <- odd.b[-(m + 1), ]
+    odd.coords <- rbind(odd.a, odd.b)
+    even.a <- jj[(m + 2):(2 * m + 1), ]
+    even.b <- jj[(m + 1):(2 * m + 1), ]
+    even.b[, 2] <- even.b[, 2] + 1
+    even.coords <- rbind(even.a, even.b)
+    f <- function(a, x) {
+        x + a
+    }
+    all.odd.coords <- do.call("rbind", sapply(0:m, f, x = odd.coords, 
+        simplify = FALSE))
+    all.even.coords <- do.call("rbind", sapply(0:m, f, x = even.coords, 
+        simplify = FALSE))
+    all.even.coords <- process(all.even.coords,n)
+    diam.odd <- 1:(1 + 2 * m * (1 + m))
+    out[all.odd.coords[diam.odd, ]] <- 2 * diam.odd - 1
+    diam.even <- 1:(2 * m * (1 + m))
+    out[all.even.coords[diam.even, ]] <- 2 * diam.even
+    return(force.integer(out))
 }
 "lt" <-
 function (m1, m2) 
@@ -472,7 +499,7 @@ function (n, i = 2, j = 3)
     return(force.integer(n * (col(a) - i * row(a) + i - 1)%%n + 
         (col(a) - j * row(a) + j - 1)%%n + 1))
 }
-"min.max" <-
+"minmax" <-
 function (x) 
 {
     max(x) == min(x)

@@ -43,9 +43,9 @@ is.normal(m)
   2-5 give the result of a call to \code{allsums()}, viz: rowwise and
   columwise sums; and broken major
   (ie NW-SE) and minor (ie NE-SW) diagonal sums.}
-\references{\code{http://mathworld.wolfram.com/MagicSquare.html}}
+\references{\url{http://mathworld.wolfram.com/MagicSquare.html}}
 \author{Robin K. S. Hankin}
-\seealso{\code{\link{min.max}},\code{\link{is.perfect}},\code{\link{is.semimagichypercube}}}
+\seealso{\code{\link{minmax}},\code{\link{is.perfect}},\code{\link{is.semimagichypercube}}}
 \examples{
 is.magic(magic(4))
 f <- function(n){is.magic(magic(n))}
@@ -54,7 +54,7 @@ all(sapply(3:50,f))
 is.panmagic(panmagic.4())
 is.panmagic(panmagic.8())
 
-proper.magic <- function(m){is.magic(m) & min.max(c(1,diff(sort(m))))}
+proper.magic <- function(m){is.magic(m) & minmax(c(1,diff(sort(m))))}
 proper.magic(magic(20))
 }
 \keyword{array}

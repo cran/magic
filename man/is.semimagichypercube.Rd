@@ -55,7 +55,7 @@ is.perfect(a)
 
   The terminology in this area is pretty confusing.  
   }
-\references{\code{http://members.shaw.ca/hdhcubes/cube_perfect.htm#Cubes}}
+\references{\url{http://members.shaw.ca/hdhcubes/cube_perfect.htm#Cubes}}
 \author{Robin K. S. Hankin}
 \seealso{\code{\link{is.magic}}, \code{\link{allsubhypercubes}},\code{\link{hendricks}}}
 \examples{
