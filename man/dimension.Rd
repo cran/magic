@@ -10,7 +10,6 @@ Used by \code{magiccube.2np1}.
 \usage{
 dimension(a, i)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{a}{array to be converted}
   \item{i}{Number of the dimension}
@@ -24,7 +23,7 @@ being \eqn{n_i}{n_i}.
 \examples{
 a <- array(0,c(3,3,2,2))
 dimension(a,2)
-a[(dimension(a,1)+dimension(a,2)+dimension(a,3)+dimension(a,4))\%\%2==1] <- 1
-a
+(dimension(a,1)+dimension(a,2)+dimension(a,3)+dimension(a,4))\%\%2
+
 }
 \keyword{array}

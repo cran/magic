@@ -18,4 +18,11 @@ an 8-by-8 magic square.
 }
 \references{\url{http://www.grogono.com/magic/index.php}}
 \author{Robin K. S. Hankin}
+\examples{
+h <- magic.8()
+h[,,1]
+
+f <- function(i){is.magic(h[,,i])}
+stopifnot(all(sapply(1:90,f)))
+}
 \keyword{array}

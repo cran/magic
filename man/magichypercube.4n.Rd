@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Magic hypercubes of order 4n}
 \description{
-Returns n-dimensional magic cubes of order 4n
+Returns magic hypercubes of order 4n and any dimension.
 }
 \usage{
 magichypercube.4n(m, d = 3)

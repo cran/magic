@@ -12,7 +12,7 @@ notmagic.2n(m)
 \arguments{
   \item{m}{Order of square is \eqn{n=2m}{n=2m}}
 }
-\references{"Magic Squares and Cubes", Andrews, (book)}
+\references{``Magic Squares and Cubes'', Andrews, (book)}
 \author{Robin K. S. Hankin}
 \note{This took me a whole evening to code up.  And I was quite pleased
   with the final vectorized form: it matches Andrews's (8 by 8) example
