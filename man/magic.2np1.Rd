@@ -1,6 +1,5 @@
 \name{magic.2np1}
 \alias{magic.2np1}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Magic squares of odd order}
 \description{
   Function to create magic squares of odd order 
@@ -8,7 +7,6 @@
 \usage{
 magic.2np1(m, ord.vec = c(-1, 1), break.vec = c(1, 0), start.point=NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{m}{creates a magic square of order \eqn{n=2m+1}{n=2m+1}}
   \item{ord.vec}{ordinary vector.  Default value of \code{c(-1,1) }

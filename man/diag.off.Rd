@@ -11,8 +11,8 @@ diag.off(a, offset = 0, nw.se = TRUE)
 \arguments{
   \item{a}{Square matrix}
   \item{offset}{vertical offset} 
-  \item{nw.se}{Boolean variable with TRUE meaning trace diagonals along
-    the northwest-southeast direction (point \code{[1,n]}
+  \item{nw.se}{Boolean variable with \code{TRUE} meaning trace diagonals
+    along the northwest-southeast direction (point \code{[1,n]}
     to \code{[n,1]}).}  }
 \details{
   Useful when testing for panmagic squares.  The first element is always

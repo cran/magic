@@ -7,7 +7,6 @@ Extracts all subhypercubes from an n-dimensional hypercube.
 \usage{
 allsubhypercubes(a)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{a}{The magic hypercube whose subhypercubes are computed}
 }
@@ -20,10 +19,11 @@ allsubhypercubes(a)
   allsubhypercubes(a)}, consider \code{jj[9]}.  The name of
   \code{jj[9]} is \code{"n-i+1,i,i,"}; its value is a square matrix.  The
   columns of \code{jj[9]} may be recovered by \code{a[n-i+1,i,i,]}
-  with \eqn{i=1\ldots n}{i=1...n} (NB: that is, \code{rbind(a[n-1+1,1,1,],
+  with \eqn{i=1\ldots n}{i=1...n} (\strong{NB}: that is,
+  \code{rbind(a[n-1+1,1,1,],
   a[n-2+1,2,2,], a[n-3+1,3,3,], a[n-4+1,4,4,])} where \code{n=4}).
 
-  The list does not inlude the whole array.
+  The list does not include the whole array.
 }
 \author{Robin K. S. Hankin}
 \note{This function is a dog's dinner.  It's complicated, convoluted,

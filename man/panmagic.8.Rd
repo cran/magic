@@ -24,8 +24,8 @@ is.panmagic(panmagic.8(chosen=2:7))
 is.normal(panmagic.8(chosen=2:7))
 is.normal(panmagic.8(chosen=c(1,2,3,6,7,8)))
 
-#to see the twelve basis magic carpets, use "chosen" an integer
-#between 1 and 12, with vals=1:
+#to see the twelve basis magic carpets, set argument \code{chosen} to each
+#integer from 1 to 12 in turn, with vals=1:
 
 panmagic.8(chosen=1,vals=1)-1
 image(panmagic.8(chosen=12,vals=1))

@@ -4,7 +4,8 @@
 
 \title{Standard form for magic squares}
 \description{
-  Transforms a magic square or magic hypercube into Frenicle's standard form
+  Transforms a magic square or magic hypercube into
+  Fr\'{e}nicle's standard form
 }
 \usage{
 as.standard(a)
@@ -35,7 +36,9 @@ Next, \code{aperm()} is called so that
 \code{a[1,1,...,1,2] < a[1,1,...,2,1] < ... < a[2,1,...,1,1]}.
 
 Note that the inequalities are strict as hypercubes are assumed to be
-normal.
+normal.  As of version 1.3-1, \code{as.standard()} will accept arrays of
+any dimension (ie arrays \code{a} with \code{minmax(dim(a))==FALSE} will
+be handled sensibly).
   
 \code{is.standard()} returns \code{TRUE} if the magic square or
 hypercube is in standard form.  \code{is.standard()} and
@@ -50,6 +53,10 @@ is.standard(magic.2np1(4))
 as.standard(magic.4n(3))
 
 as.standard(magichypercube.4n(1,5))
+
+##non-square arrays:
+as.standard(magic(7)[1:3,])
+
 
 }
 \keyword{array}

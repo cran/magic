@@ -3,13 +3,13 @@
 \title{Conway's lozenge algorithm for magic squares}
 \description{
   Uses John Conway's lozenge algorithm to produce magic squares of
-  singly-even order.
+  odd order.
 }
 \usage{
 lozenge(m)
 }
 \arguments{
-  \item{m}{magic square of order \code{n=2m+1}}
+  \item{m}{magic square returned is of order \code{n=2m+1}}
 }
 \author{Robin Hankin}
 \seealso{\code{\link{magic.4np2}}}

@@ -7,7 +7,7 @@ A 12-by-12 most perfect square due to Ollerenshaw
 }
 \usage{data(Ollerenshaw)}
 \source{
-  ``Most perfect pandiagonal magic squares'', K. Ollerenshaw and D. Bree,
+  \dQuote{Most perfect pandiagonal magic squares}, K. Ollerenshaw and D. Bree,
   1998, Institute of Mathematics and its applications}
  
 }

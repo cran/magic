@@ -1,6 +1,5 @@
 \name{magichypercube.4n}
 \alias{magichypercube.4n}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Magic hypercubes of order 4n}
 \description{
 Returns magic hypercubes of order 4n and any dimension.
@@ -8,7 +7,6 @@ Returns magic hypercubes of order 4n and any dimension.
 \usage{
 magichypercube.4n(m, d = 3)
 }
-%- maybe also 'usage' for other objects documented here. 
 \arguments{
   \item{m}{Magic hypercube produced of order \eqn{n=4m}{n=4m}}
   \item{d}{Dimensionality of cube}

@@ -6,17 +6,19 @@
   columns and (broken) diagonals of a magic square
 }
 \usage{
-magic.constant(n)
+magic.constant(n,d=2,start=1)
 }
 \arguments{
   \item{n}{Order of the square}
+  \item{d}{Dimension of square, defaulting to \code{d=2} (a square)}
+  \item{start}{Start value of square.  Common values are 0 and 1.}
 }
 \details{
-  Returns \eqn{n(n^2+1)/2}{n(n^2+1)/2}.  Note that this is correct for
-  magic squares whose numbers run from \eqn{1\ldots n^2}{1...n^2}.  If the
-  square is numbered \eqn{0\ldots n^2-1}{1 ... n^2-1} the correct magic
-  constant would be \eqn{n(n^2-1)/2}{n(n^2-1)/2}, or
-  \code{magic.constant(n)-n}. 
+  If \code{n} is an integer, interpret this as the order of the square
+  or hypercube; return \eqn{n(start+n^d-1)/2}{n(start+n^d-1)/2}.
+
+  If \code{n} is a square or hypercube, return the magic constant for
+  a normal array (starting at 1) of the same dimensions as \code{n}.
 }
 \author{Robin K. S. Hankin}
 \seealso{\code{\link{magic}}}

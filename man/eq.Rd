@@ -14,7 +14,7 @@
 \title{Comparison of two magic squares}
 \description{
 Compares two magic squares according to Frenicle's method.  Mnemonic is
-the old Fortran ``.GT."  (for ``Greater Than") comparison et seq.
+the old Fortran \dQuote{.GT.}  (for \dQuote{Greater Than}) comparison et seq.
 
 To compare magic square \code{a} with magic square \code{b}, their
 elements are compared in rowwise order: \code{a[1,1]} is compared with
@@ -46,7 +46,10 @@ m1 \%le\% m2
 }
 \author{Robin K. S. Hankin}
 \note{Rather clumsy function definition due to the degenerate case of 
-testing two identical matrices (\code{min(NULL)} is undefined).
+  testing two identical matrices (\code{min(NULL)} is undefined).
+
+  The two arguments are assumed to be matrices of the same size.  If
+  not, an error is given.  
 }
 \seealso{\code{\link{as.standard}}}
 \examples{

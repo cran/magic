@@ -7,7 +7,6 @@ Creates odd-order magic cubes
 \usage{
 magiccube.2np1(m)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{m}{n=2m+1}
 }

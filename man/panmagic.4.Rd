@@ -1,6 +1,5 @@
 \name{panmagic.4}
 \alias{panmagic.4}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Panmagic squares of order 4}
 \description{
 Creates all fundamentally different panmagic squares of order 4.

@@ -3,7 +3,7 @@
 \title{Magic squares of order 4n+2}
 \description{
   Produces a magic square of order \eqn{4n+2}{4n+2} using
-  Conway's ``LUX'' method
+  Conway's \dQuote{LUX} method
 }
 \usage{
 magic.4np2(m)

@@ -7,7 +7,7 @@ A pantriagonal magic cube of order 4 originally due to Hendricks
 }
 \usage{data(cube2)}
 \details{
-  Meaning of `pantriagonal' currently unclear
+  Meaning of \dQuote{pantriagonal} currently unclear
 }
 \source{
 Hendricks

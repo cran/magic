@@ -1,6 +1,60 @@
+"adiag" <-
+function (..., pad = 0, do.dimnames = TRUE) 
+{
+    args <- list(...)
+    if (length(args) == 1) {
+        return(args[[1]])
+    }
+    if (length(args) > 2) {
+        jj <- do.call("Recall", c(args[-1], list(pad = pad)))
+        return(do.call("Recall", c(list(args[[1]]), list(jj), 
+            list(pad = pad))))
+    }
+    a <- args[[1]]
+    b <- args[[2]]
+    if (is.null(b)) {
+        return(a)
+    }
+    if (is.null(dim(a)) & is.null(dim(b))) {
+        dim(a) <- rep(1, 2)
+        dim(b) <- rep(1, 2)
+    }
+    if (is.null(dim(a)) & length(a) == 1) {
+        dim(a) <- rep(1, length(dim(b)))
+    }
+    if (is.null(dim(b)) & length(b) == 1) {
+        dim(b) <- rep(1, length(dim(a)))
+    }
+    if (length(dim.a <- dim(a)) != length(dim.b <- dim(b))) {
+        stop("a and b must have identical number of dimensions")
+    }
+    seq.new <- function(i) {
+        if (i == 0) {
+            return(NULL)
+        }
+        else {
+            return(1:i)
+        }
+    }
+    s <- array(pad, dim.a + dim.b)
+    s <- do.call("[<-", c(list(s), lapply(dim.a, seq.new), list(a)))
+    ind <- lapply(seq(dim.b), function(i) seq.new(dim.b[[i]]) + 
+        dim.a[[i]])
+    out <- do.call("[<-", c(list(s), ind, list(b)))
+    n.a <- dimnames(a)
+    n.b <- dimnames(b)
+    if (do.dimnames & !is.null(n.a) & !is.null(n.b)) {
+        dimnames(out) <- mapply(c, n.a, n.b, SIMPLIFY = FALSE)
+        names(dimnames(out)) <- names(n.a)
+    }
+    return(out)
+}
 "allsubhypercubes" <-
 function (a) 
 {
+    if (!minmax(dim(a))) {
+        stop("only cubes of equal dimensions allowed")
+    }
     n <- dim(a)[1]
     d <- length(dim(a))
     tri <- c("", "i", "n-i+1")
@@ -28,49 +82,63 @@ function (a)
     return(out)
 }
 "allsums" <-
-function (m) 
+function (m, FUN = sum) 
 {
     n <- nrow(m)
-    rowsums <- apply(m, 1, sum)
-    colsums <- apply(m, 2, sum)
+    rowsums <- apply(m, 1, FUN)
+    colsums <- apply(m, 2, FUN)
     f1 <- function(i) {
-        sum(diag.off(m, i, nw.se = TRUE))
+        FUN(diag.off(m, i, nw.se = TRUE))
     }
     f2 <- function(i) {
-        sum(diag.off(m, i, nw.se = FALSE))
+        FUN(diag.off(m, i, nw.se = FALSE))
     }
     majors <- sapply(0:(n - 1), f1)
     minors <- sapply(0:(n - 1), f2)
     return(list(rowsums = rowsums, colsums = colsums, majors = majors, 
         minors = minors))
 }
+"ashift" <-
+function (a, v) 
+{
+    if (is.vector(a)) {
+        return(shift(a, v))
+    }
+    f <- function(i) {
+        shift(1:(dim(a)[i]), v[i])
+    }
+    do.call("[", c(list(a), sapply(1:length(dim(a)), f, simplify = FALSE)))
+}
 "as.standard" <-
 function (a) 
 {
-    n <- dim(a)[1]
-    d <- length(dim(a))
-    f <- function(...) {
-        c(1, n)
+    d.a <- dim(a)
+    if (max(d.a) <= 1) {
+        return(a)
     }
-    corner.coords <- do.call("expand.grid", lapply(rep(0, d), 
-        FUN = f))
-    corner.coords <- as.matrix(corner.coords)
-    corners <- a[corner.coords]
-    pos.of.min <- rbind(corner.coords[which.min(a[corner.coords]), 
-        ])
-    jj <- rep(NA, d)
-    jj[pos.of.min == 1] <- "f"
-    jj[pos.of.min > 1] <- "b"
-    jj <- lapply(jj, function(x) {
-        if (x == "f") {
+    d <- length(d.a)
+    corners <- as.matrix(do.call("expand.grid", lapply(1:d, function(i) c(1, 
+        dim(a)[i]))))
+    pos.of.min <- corners[which.min(a[corners]), ]
+    d.a[pos.of.min > 1] <- -d.a[pos.of.min > 1]
+    f <- function(n) {
+        if (n > 0) {
             1:n
         }
         else {
-            n:1
+            (-n):1
         }
-    })
-    a <- do.call("[", c(list(a), jj))
+    }
+    a <- do.call("[", c(list(a), lapply(d.a, f)))
     return(aperm(a, order(-a[1 + diag(nrow = d)])))
+}
+"circulant" <-
+function (n,vec=1:n)
+{
+   a <- matrix(0,n,n)
+   out <- process(1-row(a)+col(a),n)
+   out[] <- vec[out]
+   return(out)
 }
 "diag.off" <-
 function (a, offset = 0, nw.se = TRUE) 
@@ -95,7 +163,7 @@ function (a, i)
     a <- aperm(a, permute)
     a[] <- p
     permute[permute] <- 1:n
-    return(aperm(process(a, d), permute))
+    return(force.integer(aperm(process(a, d), permute)))
 }
 "eq" <-
 function (m1, m2) 
@@ -135,24 +203,41 @@ function (m1, m2)
 {
     return(gt(m1, m2))
 }
+"hudson" <-
+function (n = NULL, a = NULL, b = NULL) 
+{
+    if (is.null(n)) {
+        n <- length(a)
+    }
+    if (is.null(a)) {
+        a <- c(n - 1, 0:(n - 2))
+    }
+    if (is.null(b)) {
+        b <- c(2:(n - 1), n, 1)
+    }
+    perm <- c(n - 1, n, 1:(n - 2))
+    f <- function(i) {
+        recurse(start = a, perm = perm, i)
+    }
+    g <- function(i) {
+        recurse(start = b, perm = perm, i)
+    }
+    jj <- 0:(n - 1)
+    aa <- t(sapply(jj, f))
+    bb <- t(sapply(-jj, g))
+    return(n * aa + bb)
+}
 "is.2x2.correct" <-
 function (m, give.answers = FALSE) 
 {
-    n <- nrow(m)
-    index <- cbind(c(0, 1, 0, 1), c(0, 0, 1, 1))
-    f <- function(x) {
-        sum(m[process(sweep(index, 2, x, "+"), n)])
-    }
-    topleftcoords <- as.matrix(expand.grid(1:n, 1:n))
-    colnames(topleftcoords) <- c("i", "j")
-    sums <- as.vector(apply(topleftcoords, 1, f))
+    window <- c(2, 2)
+    sums <- subsums(m, window)
     answer <- minmax(sums)
     if (give.answers == FALSE) {
         return(answer)
     }
     else {
-        return(list(answer = answer, tbt.sums = cbind(topleftcoords, 
-            sum = sums)))
+        return(list(answer = answer, tbt.sums = sums))
     }
 }
 "is.associative" <-
@@ -160,63 +245,181 @@ function (m)
 {
     is.magic(m) & minmax(c(m + rev(m), nrow(m)^2 + 1))
 }
-"is.diagonally.correct" <-
-function (m, give.answers = FALSE) 
+"is.square.palindromic" <-
+function (m, base=10, give.answers=FALSE)
 {
     n <- nrow(m)
-    index <- cbind(c(0, n/2), c(0, n/2))
-    f <- function(x) {
-        sum(m[process(sweep(index, 2, x, "+"), n)])
+    S <- function(i){ashift(diag(n),c(i,0))}
+    P <- function(k){
+      out <- matrix(0,n,n)
+      out[k,k] <- 1
+      return(force.integer(out))
     }
-    topleftcoords <- as.matrix(expand.grid(1:(n/2), 1:n))
-    colnames(topleftcoords) <- c("i", "j")
-    sums <- as.vector(apply(topleftcoords, 1, f))
-    answer <- minmax(sums)
+    f.maj <- function(i){
+      is.persymmetric(m %*% S(i) %*% t(m))
+    }
+
+    f.min <- function(i){
+      is.persymmetric(t(m) %*% S(i) %*% m)
+    }
+
+    row.sufficient <- is.persymmetric(t(m) %*% m)
+    col.sufficient <- is.persymmetric(m %*% t(m))
+    major.diag.sufficient <- all(sapply(1:nrow(m),f.maj))
+    minor.diag.sufficient <- all(sapply(1:nrow(m),f.min))
+
+    
+    sufficient <- row.sufficient & col.sufficient & major.diag.sufficient & minor.diag.sufficient
+      
+    b <- base^(0:(n-1))
+    R <- diag(n)[n:1,]
+
+    is.necessary <- function(mat,tol=1e-8){
+      as.vector(abs(
+      (crossprod(b, R %*% mat %*% R) %*% b)/
+        (crossprod(b, mat) %*% b)-1)<tol)
+    }
+    
+    row.necessary <- is.necessary(crossprod(m,m))
+    col.necessary <- is.necessary(m %*% t(m))
+
+    f1 <- function(i) {
+      diag.off(m, i, nw.se = TRUE)
+    }
+    f2 <- function(i) {
+      diag.off(m, i, nw.se = FALSE)
+    }
+    m.tilde.major <- sapply(0:(n-1),f1)
+    m.tilde.minor <- sapply(0:(n-1),f2)
+
+    major.diag.necessary <-  is.necessary(crossprod(m.tilde.major %*% t(m.tilde.major)))
+    minor.diag.necessary <-  is.necessary(crossprod(m.tilde.minor %*% t(m.tilde.minor)))
+
+    necessary=row.necessary & col.necessary & major.diag.necessary & minor.diag.necessary
+
+    if(give.answers){
+      return(list(
+                  necessary = necessary,
+                  sufficient = sufficient,
+                  row.necessary = row.necessary,
+                  col.necessary = col.necessary,
+                  major.diag.necessary = major.diag.necessary,
+                  minor.diag.necessary = minor.diag.necessary,
+                  row.sufficient = row.sufficient,
+                  col.sufficient = col.sufficient,
+                  major.diag.sufficient = major.diag.sufficient,
+                  minor.diag.sufficient = minor.diag.sufficient
+                  ))
+    } else {
+      return( sufficient )
+    }
+}  
+"is.bree.correct" <-
+function (m, give.answers = FALSE) 
+{
+    diag.dist <- nrow(m)%/%2
+    offsets <- matrix(c(0, diag.dist), 2, 2)
+    diag.sums <- subsums(m, offsets)
+    answer <- minmax(diag.sums)
     if (give.answers == FALSE) {
         return(answer)
     }
     else {
-        return(list(answer = answer, diag.sums = cbind(topleftcoords, 
-            sum = sums)))
+        return(list(answer = answer, diag.sums = diag.sums))
+    }
+}
+"is.centrosymmetric" <-
+function (m)
+{
+    all(m==rev(m))
+}
+"is.circulant" <-
+function(m)
+{
+  n <- nrow(m)
+  S <- ashift(diag(n),c(1,0))
+  return(all(force.integer(m%*%S)==force.integer(S%*%m)))
+}
+    
+  
+"is.diagonally.correct" <-
+function (a, give.answers = FALSE, FUN = sum, boolean = FALSE) 
+{
+    if (!minmax(dim(a))) {
+        stop("only cubes of equal dimensions allowed")
+    }
+    n <- dim(a)[1]
+    d <- length(dim(a))
+    b <- c(1, -1)
+    f <- function(dir) {
+        (dir > 0) * (1:n) + (dir < 0) * (n:1)
+    }
+    g <- function(jj) {
+        FUN(a[sapply(jj, f)])
+    }
+    ans <- do.call("expand.grid", lapply(1:d, function(...) {
+        b
+    }))
+    diag.sums <- apply(ans, 1, g)
+    dim(diag.sums) <- c(length(diag.sums)/(2^d), rep(2, d))
+    if (boolean) {
+        answer <- all(diag.sums)
+    }
+    else {
+        answer <- minmax(diag.sums)
+    }
+    if (give.answers) {
+        return(list(answer = answer, diag.sums = drop(diag.sums)))
+    }
+    else {
+        return(answer)
+    }
+}
+"is.latin" <-
+function (m, give.answers = FALSE) 
+{
+    is.latinhypercube(a = m, give.answers = give.answers)
+}
+"is.latinhypercube" <-
+function (a, give.answers = FALSE) 
+{
+    f <- function(x) {
+        minmax(c(1, diff(sort(x))))
+    }
+    is.consecutive <- is.semimagichypercube(a, FUN = f, give.answers = TRUE)$rook.sums
+    answer <- all(is.consecutive)
+    if (give.answers) {
+        return(list(answer = answer, is.consecutive))
+    }
+    else {
+        return(answer)
     }
 }
 "is.magic" <-
-function (m, give.answers = FALSE) 
+function (m, give.answers = FALSE, FUN = sum,  boolean = FALSE) 
 {
-    jj <- allsums(m)
-    answer <- minmax(c(jj$rowsums, jj$colsums, jj$majors[1], 
-        jj$minors[1]))
+    sums <- allsums(m, FUN = FUN)
+    jj <- c(sums$rowsums, sums$colsums, sums$majors[1], sums$minors[1])
+    if (boolean) {
+        answer <- all(jj)
+    }
+    else {
+        answer <- minmax(jj)
+    }
     if (give.answers) {
-        return(c(answer = answer, jj))
+        return(c(answer = answer, sums))
     }
     else {
         return(answer)
     }
 }
 "is.magichypercube" <-
-function (a, give.answers = FALSE) 
+function (a, give.answers = FALSE, FUN = sum, boolean = FALSE) 
 {
-    n <- dim(a)[1]
-    d <- length(dim(a))
-    b <- c(-1, 1)
-    f <- function(dir, v) {
-        if (dir > 0) {
-            return(v)
-        }
-        else {
-            return(rev(v))
-        }
-    }
-    g <- function(jj) {
-        sum(a[sapply(jj, f, v = 1:n)])
-    }
-    h <- function(...) {
-        b
-    }
-    ans <- do.call("expand.grid", lapply(1:d, FUN = h))
-    diag.sums <- apply(ans, 1, g)
-    dim(diag.sums) <- rep(2, d)
-    jj.semi <- is.semimagichypercube(a, give.answers = TRUE)
+    diag.sums <- is.diagonally.correct(a, give.answers = TRUE, 
+        FUN = FUN, boolean = boolean)$diag.sums
+    jj.semi <- is.semimagichypercube(a, give.answers = TRUE, 
+        FUN = FUN, boolean = boolean)
     answer <- minmax(diag.sums) & jj.semi$answer
     if (give.answers) {
         return(list(answer = answer, rook.sums = jj.semi$rook.sums, 
@@ -230,15 +433,15 @@ function (a, give.answers = FALSE)
 function (m, give.answers = FALSE) 
 {
     if (give.answers) {
-        idc <- is.diagonally.correct(m, give = TRUE)
+        ibc <- is.bree.correct(m, give = TRUE)
         i2c <- is.2x2.correct(m, give = TRUE)
         ipd <- is.panmagic(m, give = TRUE)
-        return(list(answer = idc$answer & i2c$answer, rowsums = ipd$rowsums, 
+        return(list(answer = ibc$answer & i2c$answer, rowsums = ipd$rowsums, 
             colsums = ipd$colsums, majors = ipd$majors, minors = ipd$minors, 
-            diag.sums = idc$diag.sums, tbt.sums = i2c$tbt.sums))
+            diag.sums = ibc$diag.sums, tbt.sums = i2c$tbt.sums))
     }
     else {
-        return(is.diagonally.correct(m) & is.2x2.correct(m))
+        return(is.bree.correct(m) & is.2x2.correct(m))
     }
 }
 "is.normal" <-
@@ -246,58 +449,118 @@ function (m)
 {
     minmax(c(1, diff(sort(m))))
 }
-"is.panmagic" <-
-function (m, give.answers = FALSE) 
+"is.ok" <-
+function (vec, n = length(vec), d = 2) 
 {
-    jj <- allsums(m)
-    answer <- minmax(c(jj$rowsums, jj$colsums, jj$majors, jj$minors))
-    if (give.answers == FALSE) {
-        return(answer)
+    return(sum(vec) == magic.constant(n, d = d))
+}
+"is.panmagic" <-
+function (m, give.answers = FALSE, FUN = sum, boolean = FALSE) 
+{
+    sums <- allsums(m, FUN = FUN)
+    jj <- c(sums$rowsums, sums$colsums, sums$majors, sums$minors)
+    if (boolean) {
+        answer <- all(jj)
     }
     else {
-        return(c(answer = answer, jj))
+        answer <- minmax(jj)
+    }
+    if (give.answers) {
+        return(c(answer = answer, sums))
+    }
+    else {
+        return(answer)
     }
 }
 "is.perfect" <-
-function (a) 
+function (a, give.answers = FALSE, FUN = sum, boolean = FALSE) 
 {
     n <- dim(a)[1]
     d <- length(dim(a))
-    magic.constant <- apply(a, 1:(d - 1), sum)[1]
-    is.ok <- function(jj) {
+    putative.magic.constant <- FUN(do.call("[", c(list(a), alist(a = )$a, 
+        rep(1, d - 1))))
+    jj.is.ok <- function(jj, jj.give) {
         if (length(dim(jj)) == 1) {
-            return(sum(jj) == magic.constant)
+            if (boolean) {
+                return(FUN(jj))
+            }
+            else {
+                if (jj.give) {
+                  return(FUN(jj))
+                }
+                else {
+                  return(FUN(jj) == putative.magic.constant)
+                }
+            }
         }
         else {
-            return(is.semimagichypercube(jj) & apply(jj, 1:(length(dim(jj)) - 
-                1), sum)[1] == magic.constant)
+            return(is.semimagichypercube(jj, FUN = FUN, boolean = boolean, 
+                give.answers = jj.give))
         }
     }
-    return(all(unlist(lapply(allsubhypercubes(a), is.ok))))
+    semi.stuff <- is.semimagichypercube(a, give.answers = TRUE, 
+        FUN = FUN, boolean = boolean)
+    diag.stuff <- unlist(lapply(allsubhypercubes(a), jj.is.ok, 
+        jj.give = FALSE))
+    answer <- semi.stuff$answer & all(diag.stuff)
+    if (give.answers) {
+        diag.sums <- lapply(allsubhypercubes(a), jj.is.ok, jj.give = TRUE)
+        return(list(answer = answer, rook.sums = semi.stuff$rook.sums, 
+            diag.sums = unlist(diag.sums, recursive = FALSE)))
+    }
+    else {
+        return(answer)
+    }
+}
+"is.persymmetric" <-
+function (m)
+{
+    jj <- m[,nrow(m):1]
+    all(jj==t(jj))
 }
 "is.semimagic" <-
-function (m, give.answers = FALSE) 
+function (m, give.answers = FALSE, FUN = sum, boolean = FALSE) 
 {
-    jj <- allsums(m)
-    answer <- minmax(c(jj$rowsums, jj$colsums))
+    sums <- allsums(m, FUN = FUN)
+    jj <- c(sums$rowsums, sums$colsums)
+    if (boolean) {
+        answer <- all(jj)
+    }
+    else {
+        answer <- minmax(jj)
+    }
     if (give.answers) {
-        return(c(answer = answer, jj))
+        return(c(answer = answer, sums))
     }
     else {
         return(answer)
     }
 }
 "is.semimagichypercube" <-
-function (a, give.answers = FALSE) 
+function (a, give.answers = FALSE, FUN = sum, boolean = FALSE) 
 {
-    n <- dim(a)[1]
     d <- length(dim(a))
     f <- function(i) {
-        apply(a, (1:d)[-i], sum)
+        apply(a, (1:d)[-i], FUN)
     }
     jj <- sapply(1:d, f)
-    dim(jj) <- c(rep(n, d - 1), d)
-    answer <- minmax(jj)
+    if (minmax(dim(a))) {
+        dim(jj) <- c(dim(a)[-1], d)
+        if (boolean) {
+            answer <- all(jj)
+        }
+        else {
+            answer <- minmax(jj)
+        }
+    }
+    else {
+        if (boolean) {
+            answer <- all(unlist(jj))
+        }
+        else {
+            answer <- minmax(unlist(jj))
+        }
+    }
     if (give.answers) {
         return(list(answer = answer, rook.sums = jj))
     }
@@ -364,8 +627,8 @@ function (m1, m2)
 function (n) 
 {
     n <- round(n)
-    if (n < 3) {
-        stop("Normal magic squares of order <3 do not exist")
+    if (n == 2) {
+        stop("Normal magic squares of order 2 do not exist")
     }
     if (n%%2 == 1) {
         return(as.standard(magic.2np1(floor(n/2))))
@@ -407,23 +670,13 @@ function (m, ord.vec = c(-1, 1), break.vec = c(1, 0), start.point = NULL)
     return(a)
 }
 "magic.4n" <-
-function (m, method = "a") 
+function (m) 
 {
     n <- 4 * m
     a <- matrix(1:(n^2), n, n)
-    switch(method, a = {
-        jj <- as.logical(kronecker(matrix(1, m + 1, m + 1), kronecker(diag(2), 
-            matrix(1, 2, 2)))[2:(n + 1), 2:(n + 1)])
-    }, b = {
-        majors <- kronecker(1:n, cbind(0, 4 * 1:m), "+")
-        majors <- process(majors, n)
-        minors <- majors
-        minors[, 2] <- n - minors[, 2] + 1
-        minors <- process(minors, n)
-        jj <- matrix(FALSE, n, n)
-        jj[majors] <- TRUE
-        jj[minors] <- TRUE
-    })
+    jj.1 <- kronecker(diag(2), matrix(1, 2, 2))
+    jj <- as.logical(kronecker(matrix(1, m + 1, m + 1), jj.1)[2:(n + 
+        1), 2:(n + 1)])
     a[jj] <- rev(a[jj])
     return(force.integer(a))
 }
@@ -495,24 +748,13 @@ function (...)
     }
     return(array(sapply(1:n, f), c(8, 8, n)))
 }
-"magic.composite" <-
-function (a, b) 
-{
-    if ((length(a) == 1) & (length(b) == 1)) {
-        return(Recall(magic(a), magic(b)))
-    }
-    else {
-        a.l <- nrow(a)
-        b.l <- nrow(b)
-        return(force.integer(b.l * b.l * (kronecker(a, matrix(1, 
-            b.l, b.l)) - 1) + kronecker(matrix(1, a.l, a.l), 
-            b)))
-    }
-}
 "magic.constant" <-
-function (n) 
+function (n, d = 2, start = 1) 
 {
-    n * (n * n + 1)/2
+    if (is.array(n)) {
+        return(Recall(n = dim(n)[1], d = length(dim(n))))
+    }
+    n * (start + (n^d - 1)/2)
 }
 "magiccube.2np1" <-
 function (m) 
@@ -522,9 +764,9 @@ function (m)
     x <- dimension(jj, 1)
     y <- dimension(jj, 2)
     z <- dimension(jj, 3)
-    return(((x - y + z - 1) - n * floor((x - y + z - 1)/n)) * 
-        n * n + ((x - y - z) - n * floor((x - y - z)/n)) * n + 
-        ((x + y + z - 2) - n * floor((x + y + z - 2)/n)) + 1)
+    return(force.integer(((x - y + z - 1) - n * floor((x - y + z - 1)/n)) * 
+                         n * n + ((x - y - z) - n * floor((x - y - z)/n)) * n + 
+                         ((x + y + z - 2) - n * floor((x + y + z - 2)/n)) + 1))
 }
 "magichypercube.4n" <-
 function (m, d = 3) 
@@ -539,16 +781,9 @@ function (m, d = 3)
     a[x%%2 == 1] <- 1
     i <- kronecker(array(1, rep(m + 1, d)), kronecker(a, array(1, 
         rep(2, d)))) == 1
-    subs <- 2:(n + 1)
-    jj.g <- function(n) {
-        if (n == 0) {
-            return(i)
-        }
-        else {
-            return(subs)
-        }
-    }
-    i <- do.call("[", lapply(0:d, jj.g))
+    i <- do.call("[", c(list(i), lapply(1:d, function(jj.i) {
+        2:(n + 1)
+    })))
     j <- array(1:(n^d), rep(n, d))
     j[i] <- rev(j[i])
     return(j)
@@ -561,7 +796,8 @@ function (m, number = TRUE, do.circuit = FALSE, ...)
     jj <- sort(t(m[n:1, ]), index.return = TRUE)$ix
     x <- process(jj, n)
     y <- (jj - 1)%/%n
-    plot(x, y, type = "n")
+    par(pty = "s", xaxt = "n", yaxt = "n")
+    plot(x, y, type = "n", asp = 1, xlab = "", ylab = "", frame = FALSE)
     if (number == TRUE) {
         text(x, y, as.character(1:(n * n)))
         if (missing(...)) {
@@ -590,10 +826,60 @@ function (n, i = 2, j = 3)
     return(force.integer(n * (col(a) - i * row(a) + i - 1)%%n + 
         (col(a) - j * row(a) + j - 1)%%n + 1))
 }
-"minmax" <-
-function (x) 
+"magic.product" <-
+function (a, b, mat = NULL) 
 {
-    max(x) == min(x)
+    if (length(a) == 1) {
+        a <- magic(a)
+    }
+    if (length(b) == 1) {
+        b <- magic(b)
+    }
+    if (is.null(mat)) {
+        mat <- a * 0
+    }
+    if (any(dim(mat) != dim(a))) {
+        stop("third argument must be same size as a")
+    }
+    ra <- nrow(a)
+    ca <- ncol(a)
+    rb <- nrow(b)
+    cb <- ncol(b)
+    aa <- a
+    aa[aa] <- 1:length(a)
+    out <- sapply(mat[aa], transf, a = b)
+    out <- sweep(out, 2, length(b) * (0:(length(a) - 1)), FUN = "+")
+    out <- out[, a]
+    dim(out) <- c(rb, cb, ra, ca)
+    out <- aperm(out, c(1, 3, 2, 4))
+    dim(out) <- c(ra * rb, ca * cb)
+    return(force.integer(out))
+}
+"magic.product.fast" <-
+function (a, b) 
+{
+    if ((length(a) == 1) & (length(b) == 1)) {
+        return(Recall(magic(a), magic(b)))
+    }
+    a.l <- nrow(a)
+    b.l <- nrow(b)
+    return(force.integer(b.l * b.l * (kronecker(a, matrix(1, 
+        b.l, b.l)) - 1) + kronecker(matrix(1, a.l, a.l), b)))
+}
+"minmax" <-
+function (x, tol=1e-6) 
+{   
+    if(is.integer(x)){
+      return(identical(max(x), min(x)))
+    }
+    if(is.real(x)){
+      return(abs(max(x)-min(x))/max(abs(x)) < tol)
+    } else {
+      return(
+             abs(max(Re(x))-min(Re(x)))/max(abs(x)) < tol &
+             abs(max(Im(x))-min(Im(x)))/max(abs(x)) < tol)
+    }
+    
 }
 "ne" <-
 function (m1, m2) 
@@ -668,4 +954,96 @@ function (x, n)
     x <- x%%n
     x[x == 0] <- n
     return(x)
+}
+"recurse" <-
+function (start = 1:n, perm, i) 
+{
+    invert <- function(perm) {
+        perm[perm] <- 1:length(perm)
+        return(perm)
+    }
+    n <- length(perm)
+    i <- as.integer(i)
+    if (i < 0) {
+        return(Recall(start = start, invert(perm), -i))
+    }
+    perm.final <- 1:n
+    while (i != 0) {
+        perm.final <- perm[perm.final]
+        i <- i - 1
+    }
+    return(start[perm.final])
+}
+"shift" <-
+function (x, i) 
+{
+    n <- length(x)
+    i <- i%%n
+    if (i == 0) {
+        return(x)
+    }
+    return(x[c((n - i + 1):n, 1:(n - i))])
+}
+"strachey" <-
+function (m, square = magic.2np1(m)) 
+{
+    m <- round(m)
+    n <- 4 * m + 2
+    r <- 2 * m + 1
+    out <- kronecker(matrix(c(0, 3, 2, 1), 2, 2), matrix(1, r, 
+        r)) * r^2 + kronecker(matrix(1, 2, 2), square)
+    coords.top <- as.matrix(expand.grid(1:r, 1:m))
+    coords.top[m + 1, 2] <- m + 1
+    if (m > 1) {
+        coords.top <- rbind(coords.top, as.matrix(expand.grid(1:r, 
+            n:(n - m + 2))))
+    }
+    coords.low <- sweep(coords.top, 2, c(r, 0), "+")
+    jj <- out[coords.top]
+    out[coords.top] <- out[coords.low]
+    out[coords.low] <- jj
+    return(force.integer(out))
+}
+"subsums" <-
+function (a, p, FUN = "sum", wrap = TRUE, pad.value = 0) 
+{
+    if (wrap == FALSE) {
+        jj <- a.block.diag(array(pad.value, p - 1), a)
+        return(Recall(jj, p, FUN = FUN, pad.value = pad.value, 
+            wrap = TRUE))
+    }
+    if (is.vector(p)) {
+        sub.coords <- 1 - as.matrix(expand.grid(sapply(p, function(i) {
+            1:i
+        }, simplify = FALSE)))
+    }
+    else {
+        sub.coords <- 1 - p
+    }
+    out <- apply(sub.coords, 1, function(v) {
+        ashift(a, v)
+    })
+    dim(out) <- c(dim(a), nrow(sub.coords))
+    if (nchar(FUN) == 0) {
+        return(out)
+    }
+    else {
+        return(apply(out, 1:length(dim(a)), FUN))
+    }
+    return(out)
+}
+"transf" <-
+function (a, i) 
+{
+    i <- as.integer(i%%8)
+    if (i%%2) {
+        a <- t(a)
+    }
+    if ((i%/%2)%%2) {
+        a <- a[nrow(a):1, ]
+    }
+    if ((i%/%4)%%2) {
+        a <- a[, ncol(a):1]
+    }
+    return(a)
 }
