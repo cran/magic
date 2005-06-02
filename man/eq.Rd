@@ -13,18 +13,18 @@
 \alias{\%le\%}
 \title{Comparison of two magic squares}
 \description{
-Compares two magic squares according to Frenicle's method.  Mnemonic is
-the old Fortran \dQuote{.GT.}  (for \dQuote{Greater Than}) comparison et seq.
+  Compares two magic squares according to Fr\'{e}nicle's method.
+  Mnemonic is the old Fortran \dQuote{.GT.}  (for \dQuote{Greater Than})
+  comparison et seq.
 
 To compare magic square \code{a} with magic square \code{b}, their
 elements are compared in rowwise order: \code{a[1,1]} is compared with
-\code{b[1,1]} , then \code{a[1,2]} with \code{b[1,2]}, up to
+\code{b[1,1]}, then \code{a[1,2]} with \code{b[1,2]}, up to
 \code{a[n,n]}.  Consider the first element that is different, say
 \code{[i,j]}.  Then \code{a<b} if \code{a[i,j]<b[i,j]}.
 
 The generalization to hypercubes is straightforward: comparisons are
 carried out natural order.
-
 }
 \usage{
 eq(m1, m2)

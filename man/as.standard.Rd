@@ -17,10 +17,10 @@ is.standard(a)
 
 \details{
 For a square, \code{as.standard()} transforms a magic square into
-Frenicle's standard form.  The four numbers at each of the four corners
-are determined.  First, the square is rotated so the smallest of the
-four is at the upper left.  Then, element \code{[1,2]} is compared with
-element\code{[2,1]} and, if it is larger, the transpose is taken.
+Fr\'{e}nicle's standard form.  The four numbers at each of the four
+corners are determined.  First, the square is rotated so the smallest of
+the four is at the upper left.  Then, element \code{[1,2]} is compared
+with element\code{[2,1]} and, if it is larger, the transpose is taken.
 
 Thus all eight rotated and transposed versions of a magic square have
 the same standard form.

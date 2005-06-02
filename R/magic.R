@@ -243,6 +243,9 @@ function (m, give.answers = FALSE)
 "is.associative" <-
 function (m) 
 {
+    if(is.list(m)){
+      return(sapply(m,match.fun(sys.call()[[1]])))
+    }
     is.magic(m) & minmax(c(m + rev(m), nrow(m)^2 + 1))
 }
 "is.square.palindromic" <-
@@ -331,14 +334,16 @@ function (m, give.answers = FALSE)
 "is.centrosymmetric" <-
 function (m)
 {
+    if(is.list(m)){
+      return(sapply(m,match.fun(sys.call()[[1]])))
+    }
     all(m==rev(m))
-}
+  }
 "is.circulant" <-
-function(m)
+function(m,dir=rep(1,length(dim(m))))
 {
-  n <- nrow(m)
-  S <- ashift(diag(n),c(1,0))
-  return(all(force.integer(m%*%S)==force.integer(S%*%m)))
+
+  return(all(m == ashift(m,dir)))
 }
     
   
@@ -396,8 +401,9 @@ function (a, give.answers = FALSE)
     }
 }
 "is.magic" <-
-function (m, give.answers = FALSE, FUN = sum,  boolean = FALSE) 
+function (m, give.answers = FALSE, FUN = sum,  boolean = FALSE)
 {
+    if(is.list(m)){return(unlist(lapply(m,match.fun(sys.call()[[1]]))))}
     sums <- allsums(m, FUN = FUN)
     jj <- c(sums$rowsums, sums$colsums, sums$majors[1], sums$minors[1])
     if (boolean) {
@@ -447,6 +453,9 @@ function (m, give.answers = FALSE)
 "is.normal" <-
 function (m) 
 {
+    if(is.list(m)){
+      return(sapply(m,match.fun(sys.call()[[1]])))
+    }
     minmax(c(1, diff(sort(m))))
 }
 "is.ok" <-
@@ -571,6 +580,10 @@ function (a, give.answers = FALSE, FUN = sum, boolean = FALSE)
 "is.standard" <-
 function (a) 
 {
+    if(is.list(a)){
+      return(sapply(a,match.fun(sys.call()[[1]])))
+    }
+    
     minmax(a - as.standard(a))
 }
 "le" <-
@@ -586,6 +599,9 @@ function (m1, m2)
 "lozenge" <-
 function (m) 
 {
+    if(length(m)>1){
+      return(sapply(m,match.fun(sys.call()[[1]])))
+    }
     n <- 2 * m + 1
     out <- matrix(NA, n, n)
     jj <- cbind(m:-m, 0:(2 * m)) + 1
@@ -626,6 +642,9 @@ function (m1, m2)
 "magic" <-
 function (n) 
 {
+    if(length(n)>1){
+      return(sapply(n,match.fun(sys.call()[[1]])))
+    }
     n <- round(n)
     if (n == 2) {
         stop("Normal magic squares of order 2 do not exist")
@@ -644,7 +663,10 @@ function (n)
 "magic.2np1" <-
 function (m, ord.vec = c(-1, 1), break.vec = c(1, 0), start.point = NULL) 
 {
-    n <- 2 * m + 1
+     if(length(m)>1){
+       return(sapply(m,match.fun(sys.call()[[1]])))
+     }
+     n <- 2 * m + 1
     if (is.null(start.point)) {
         start.row <- 0
         start.col <- n + 1
@@ -672,6 +694,9 @@ function (m, ord.vec = c(-1, 1), break.vec = c(1, 0), start.point = NULL)
 "magic.4n" <-
 function (m) 
 {
+    if(length(m)>1){
+      return(sapply(m,match.fun(sys.call()[[1]])))
+    }
     n <- 4 * m
     a <- matrix(1:(n^2), n, n)
     jj.1 <- kronecker(diag(2), matrix(1, 2, 2))
@@ -683,6 +708,9 @@ function (m)
 "magic.4np2" <-
 function (m) 
 {
+    if(length(m)>1){
+      return(sapply(m,match.fun(sys.call()[[1]])))
+    }
     n <- 4 * m + 2
     f <- function(n) {
         if (n == 1) {
@@ -759,6 +787,11 @@ function (n, d = 2, start = 1)
 "magiccube.2np1" <-
 function (m) 
 {
+
+    if(length(m)>1){
+      return(sapply(m,match.fun(sys.call()[[1]])))
+    }
+
     n <- 2 * m + 1
     jj <- array(1:n, rep(n, 3))
     x <- dimension(jj, 1)
@@ -987,6 +1020,9 @@ function (x, i)
 "strachey" <-
 function (m, square = magic.2np1(m)) 
 {
+    if(length(m)>1){
+      return(sapply(m,match.fun(sys.call()[[1]])))
+    }
     m <- round(m)
     n <- 4 * m + 2
     r <- 2 * m + 1

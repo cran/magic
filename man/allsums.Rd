@@ -16,12 +16,12 @@ allsums(m,FUN=sum)
 \value{
   Returns a list of four elements.  In the following, \dQuote{sums}
   means \dQuote{the result of applying FUN()}.
-  \item{rowsums}{All n row sums}
-  \item{colsums}{All n column sums}
-  \item{majors}{All n broken major diagonals (northwest-southeast).
+  \item{rowsums}{All \eqn{n} row sums}
+  \item{colsums}{All \eqn{n} column sums}
+  \item{majors}{All \eqn{n} broken major diagonals (northwest-southeast).
     First element is the long (unbroken) major diagonal, tested by
     \code{is.magic()}}
-  \item{minors}{All n broken minor diagonals (northeast-southwest).
+  \item{minors}{All \eqn{n} broken minor diagonals (northeast-southwest).
     First element is the long (unbroken) minor diagonal.}
 }
 \author{Robin K. S. Hankin}

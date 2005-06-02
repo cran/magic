@@ -15,7 +15,7 @@ magic.constant(n,d=2,start=1)
 }
 \details{
   If \code{n} is an integer, interpret this as the order of the square
-  or hypercube; return \eqn{n(start+n^d-1)/2}{n(start+n^d-1)/2}.
+  or hypercube; return \eqn{n({\rm start}+n^d-1)/2}{n(start+n^d-1)/2}.
 
   If \code{n} is a square or hypercube, return the magic constant for
   a normal array (starting at 1) of the same dimensions as \code{n}.

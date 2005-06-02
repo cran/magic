@@ -2,17 +2,20 @@ library(magic)
 n <- 10
 
 #first test magic() for magicness, standardness, and normality for magic(3)..magic(n):
-stopifnot(sapply(3:n,function(i){is.magic            (magic(i))}))
-stopifnot(sapply(3:n,function(i){is.standard         (magic(i))}))
-stopifnot(sapply(3:n,function(i){is.normal           (magic(i))}))
+stopifnot(is.magic(magic(3:n)))
+stopifnot(is.standard(magic(3:n)))
+stopifnot(is.normal(magic(3:n)))
 
 #now test some of the specific algorithms:
-stopifnot(sapply(1:n,function(i){is.magic(strachey(i))}))
-stopifnot(sapply(1:n,function(i){is.magic(lozenge (i))}))
-stopifnot(sapply(1:n,function(i){is.magic(magic.4n(i))}))
+stopifnot(is.magic(strachey(1:n)))
+stopifnot(is.magic(lozenge (1:n)))
+stopifnot(is.magic(magic.4n(1:n)))
 
 stopifnot(sapply(1:n,function(i){is.square.palindromic(circulant(i))}))
 
+
+#now test for magic.2np1() giving a generalized circulant:
+stopifnot(sapply(1:n,function(i){is.circulant(magic.2np1(i)%%(2*i+1),c(2,-1))}))
 
 
 ## Now test that is.diagonally.correct() in fact extracts the correct elements,
@@ -72,6 +75,9 @@ stopifnot(is.perfect(perfectcube5))
 data(perfectcube6)
 stopifnot(is.perfect(perfectcube6))
 
+data(Frankenstein)
+stopifnot(is.perfect(Frankenstein))
+
 #stopifnot(apply(magic.8(),3,is.magic))
 
 ## Now check magic.product() works:
@@ -94,3 +100,12 @@ stopifnot(identical(adiag(a2,a2),kronecker(diag(2),a2)))
 stopifnot(identical(adiag(a3,a3,a3),kronecker(diag(3),a3)))
 stopifnot(identical(adiag(matrix(1,0,5),matrix(1,5,0),pad=1:5), kronecker(t(rep(1,5)),1:5)))
 
+
+#now some tests for is.circulant():
+a <- array(0,rep(2,10))
+a[1] <- a[1024] <- 1
+stopifnot(is.circulant(a))
+
+#"break" a by changing just one (randomly chosen) element:
+a[1,1,1,1,2,1,2,1,1,1] <- 1
+stopifnot(!is.circulant(a))

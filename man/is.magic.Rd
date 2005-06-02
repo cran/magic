@@ -93,6 +93,10 @@ is.latin(m,give.answers=FALSE)
   Function \code{is.mostperfect()} returns both of these.
 
 }
+\note{
+  Function \code{is.magic()} is vectorized; if a list is supplied, the
+  defaults are assumed.
+}
 \references{\url{http://mathworld.wolfram.com/MagicSquare.html}}
 \author{Robin K. S. Hankin}
   
@@ -101,6 +105,8 @@ is.latin(m,give.answers=FALSE)
 is.magic(magic(4))
 
 is.magic(diag(9),FUN=max)  #should be TRUE
+
+stopifnot(is.magic(magic(3:8)))
 
 is.panmagic(panmagic.4())
 is.panmagic(panmagic.8())
