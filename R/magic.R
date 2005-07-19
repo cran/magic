@@ -98,6 +98,16 @@ function (m, FUN = sum)
     return(list(rowsums = rowsums, colsums = colsums, majors = majors, 
         minors = minors))
 }
+"arev" <-
+function(a, swap=TRUE)
+{
+    if(is.vector(a)){a <- as.matrix(a)}
+    d <- dim(a)
+    n <- length(d)
+    if(length(swap)==1){swap <- rep(swap,n)}
+    f <- function(i){swap[i]*d[i]:1+ (!swap[i])*1:d[i]}
+    do.call("[", c(list(a), sapply(1:n, f, simplify=FALSE)))
+}
 "ashift" <-
 function (a, v) 
 {
