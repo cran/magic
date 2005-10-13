@@ -8,11 +8,11 @@ Returns magic hypercubes of order 4n and any dimension.
 magichypercube.4n(m, d = 3)
 }
 \arguments{
-  \item{m}{Magic hypercube produced of order \eqn{n=4m}{n=4m}}
+  \item{m}{Magic hypercube produced of order \eqn{n=4m}}
   \item{d}{Dimensionality of cube}
 }
 \details{
-Uses  a rather kludgy (but vectorized) method.  I am not 100\% sure that
+Uses a rather kludgy (but vectorized) method.  I am not 100\% sure that
 the method does in fact produce magic squares for all orders and dimensions.
 }
 \author{Robin K. S. Hankin}

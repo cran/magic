@@ -15,7 +15,7 @@ arev(a, swap = TRUE)
   \item{a}{Array to be reversed}
   \item{swap}{Vector of Boolean variables.  If \code{swap[i]} is
     \code{TRUE}, then dimension \code{i} of array \code{a} is reversed.
-    If \code{swap} is of length one, recycle to \code{length(dim(a))}.}
+    If \code{swap} is of length one, recycle to \code{length(dim(a))}}
 }
 \details{
   If \code{swap} is not Boolean, it is equivalent to \code{ 1:n \%in\%
@@ -30,9 +30,6 @@ arev(a, swap = TRUE)
   and is thus different from Octave's \code{flipdim()}, which (if
   supplied with  no second argument) flips the first nonsingleton
   dimension.  To reproduce this, use \code{arev(a,fnsd(a))}.
-  
-
-
 }
 \author{Robin K. S. Hankin}
 \seealso{\code{\link{ashift}}}

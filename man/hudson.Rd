@@ -28,7 +28,7 @@ hudson(n = NULL, a = NULL, b = NULL)
   but not necessarily magic. 
    
 }
-\references{C. B. Hudson, \dQuote{On pandiagonal squares of order 6t +/- 1},
+\references{C. B. Hudson, \emph{On pandiagonal squares of order 6t +/- 1},
   Mathematics magazine, March 1972, pp94-96}
 \author{Robin K. S. Hankin}
 \seealso{\code{\link{recurse}}}

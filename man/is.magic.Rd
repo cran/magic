@@ -28,13 +28,14 @@ is.latin(m,give.answers=FALSE)
 \arguments{
   \item{m}{The square to be tested}
   \item{give.answers}{Boolean, with \code{TRUE} meaning return additional
-    information about the sums (see details).}
-  \item{FUN}{A function that is evaluated 
-    for each row, column, and unbroken diagonal.}
+    information about the sums (see details)}
+  \item{FUN}{A function that is evaluated for each row, column, and
+    unbroken diagonal}
   \item{boolean}{Boolean, with \code{TRUE} meaning that the square is
     deemed magic, semimagic, etc, if all applications of \code{FUN}
     evaluate to \code{TRUE}.  If \code{boolean} is \code{FALSE}, square
-    \code{m} is magic etc if all applications of \code{FUN} are identical.}
+    \code{m} is magic etc if all applications of \code{FUN} are
+    identical}
 }
 \details{
   A \dfn{semimagic square} is one all of whose row sums equal all its
@@ -44,20 +45,20 @@ is.latin(m,give.answers=FALSE)
   diagonals equal to the magic constant.
 
   A \dfn{panmagic square} is a magic square all of whose broken diagonals
-  sum to the magic constant.  Ollerenshaw calls this a ``pandiagonal''
-  square.
+  sum to the magic constant.  Ollerenshaw calls this a
+  \dQuote{pandiagonal} square.
 
   A \dfn{most-perfect} square has all 2-by-2 arrays anywhere within the
-  square summing to \eqn{2S} where \eqn{S=n^2+1}{S=n^2+1}; and all pairs
-  of integers \eqn{n/2}{n/2} distant along the same major (NW-SE) diagonal
-  sum to \eqn{S}{S} (note that the \eqn{S}{S} used here differs from
-  Ollerenshaw's because her squares are numbered starting at zero).  The
-  first condition is tested by \code{\link{is.2x2.correct}} and the second
-  by \code{\link{is.bree.correct}}.
+  square summing to \eqn{2S} where \eqn{S=n^2+1}; and all pairs of
+  integers \eqn{n/2} distant along the same major (NW-SE) diagonal sum
+  to \eqn{S} (note that the \eqn{S} used here differs from Ollerenshaw's
+  because her squares are numbered starting at zero).  The first
+  condition is tested by \code{is.2x2.correct()} and the second by
+  \code{is.bree.correct()}.
   
   All most-perfect squares are panmagic.
 
-  A \dfn{normal square} is one that contains \eqn{n^2}{n^2} consecutive
+  A \dfn{normal square} is one that contains \eqn{n^2} consecutive
   integers (typically starting at 0 or 1).
 
   An \dfn{associative square} is a magic square in
@@ -79,13 +80,12 @@ is.latin(m,give.answers=FALSE)
 \value{
   Returns \code{TRUE} if the square is semimagic, etc.
  
-  If \code{give.answers} is taken as an argument and is \code{TRUE}, return a
-  list of at least five elements.  The first element of the list is the
-  answer: it is \code{TRUE} if the square is (semimagic, magic,
-  panmagic) and \code{FALSE} otherwise.
-  Elements 2-5 give the result of a call to \code{allsums()}, viz: rowwise
-  and columnwise sums; and broken major (ie NW-SE) and minor (ie NE-SW)
-  diagonal sums.
+  If \code{give.answers} is taken as an argument and is \code{TRUE},
+  return a list of at least five elements.  The first element of the
+  list is the answer: it is \code{TRUE} if the square is (semimagic,
+  magic, panmagic) and \code{FALSE} otherwise.  Elements 2-5 give the
+  result of a call to \code{allsums()}, viz: rowwise and columnwise
+  sums; and broken major (ie NW-SE) and minor (ie NE-SW) diagonal sums.
 
   Function \code{is.bree.correct()} also returns the sums of
   elements distant \eqn{n/2}{n/2} along a major diagonal

@@ -31,10 +31,7 @@ are the result of applying \code{FUN()}.  See third example below.
 
 Used by \code{is.magic()} et seq.
 }
-\seealso{\code{\link{is.magic}},\
-\code{\link{is.semimagic}},\
-\code{\link{is.panmagic}}
-  }
+\seealso{\code{\link{is.magic}},\code{\link{is.semimagic}},\code{\link{is.panmagic}}}
 \examples{
 allsums(magic(7))
 allsums(magic(7),FUN=max)
@@ -44,8 +41,6 @@ allsums(magic(7),FUN=function(x){x[1:2]})
 
 allsums(magic.prime(7),sort)
   # beware! compare apply(magic(7),1,sort) with apply(magic(7),2,sort)
-
-
 
 }
 \keyword{array}

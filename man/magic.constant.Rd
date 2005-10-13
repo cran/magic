@@ -2,7 +2,7 @@
 \alias{magic.constant}
 \title{Magic constant of a magic square}
 \description{
-  Returns the magic consant: that is, the common sum for all rows,
+  Returns the magic constant: that is, the common sum for all rows,
   columns and (broken) diagonals of a magic square
 }
 \usage{
