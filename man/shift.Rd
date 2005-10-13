@@ -22,9 +22,8 @@ ashift(a, v=rep(1,length(dim(a))))
     that the first dimension is to be shifted by \code{i} units)}
 }
 \details{
-  Function \code{shift(x,n)} returns \eqn{P^n(x)}{P^n(x)} where
-  \eqn{P}{P} is the permutation
-  \eqn{(n,1,2,\ldots,n-1)}{(n,1,2,...,n-1)}.
+  Function \code{shift(x,n)} returns \eqn{P^n(x)} where \eqn{P} is the
+  permutation \eqn{(n,1,2,\ldots,n-1)}{(n,1,2,...,n-1)}.
 
   Function \code{ashift} is the array generalization of this: the
   \eqn{n^{\rm th}}{n-th} dimension is shifted by \code{v[n]}.  In other

@@ -2,14 +2,14 @@
 \alias{notmagic.2n}
 \title{An unmagic square}
 \description{
-  Returns a square of order \eqn{n=2m}{n=2m} that has been claimed to
+  Returns a square of order \eqn{n=2m} that has been claimed to
   be magic, but isn't.
 }
 \usage{
 notmagic.2n(m)
 }
 \arguments{
-  \item{m}{Order of square is \eqn{n=2m}{n=2m}}
+  \item{m}{Order of square is \eqn{n=2m}}
 }
 \references{\dQuote{Magic Squares and Cubes}, Andrews, (book)}
 \author{Robin K. S. Hankin}

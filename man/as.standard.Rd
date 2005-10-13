@@ -28,8 +28,8 @@ the same standard form.
 The square returned by \code{magic()} is in standard form.
 
 For hypercubes, the algorithm is generalized.  Firstly, the hypercube is
-reflected so that \code{a[1,1,...,1,1]} is the smallest of the
-\eqn{2^d}{2^d} corner elements (eg \code{a[1,n,1,...,1,1]}).
+reflected so that \code{a[1,1,...,1,1]} is the smallest of the \eqn{2^d}
+corner elements (eg \code{a[1,n,1,...,1,1]}).
 
 Next, \code{aperm()} is called so that
 

@@ -11,9 +11,9 @@ hudson(n = NULL, a = NULL, b = NULL)
 \arguments{
   \item{n}{Order of the square, \eqn{n=6m\pm 1}{n=6m+/-1}.  If
     \code{NULL}, use the length of \code{a}}
-  \item{a}{The first line of Hudson's \eqn{A}{A} matrix.  If
+  \item{a}{The first line of Hudson's \eqn{A} matrix.  If
     \code{NULL}, use Hudson's value of \code{c(n-1,0:(n-2))}.}
-  \item{b}{The first line of Hudson's \eqn{B}{B} matrix.  If
+  \item{b}{The first line of Hudson's \eqn{B} matrix.  If
     \code{NULL}, use Hudson's value of \code{c(2:(n-1),n,1)}.
     Using default values for \code{a} and \code{b} gives an associative square.
   }
