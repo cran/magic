@@ -9,24 +9,30 @@ apad(a, l, e = NULL, method = "ext", post = TRUE)
 }
 \arguments{
   \item{a}{Array to be padded}
-  \item{l}{Amount of padding to add.  If a vector, it is interpreted as
+  \item{l}{Amount of padding to add.  If a vector of length greater than
+    one, it is interpreted as
     the extra extent of \code{a} along each of its dimensions (standard
-    recycling is used).  If a scalar, interpret as the dimension to be
+    recycling is used).  If of length one, interpret as the dimension to be
     padded, in which case the amount is given by argument \code{l}.}
-  \item{e}{If \code{l} is a scalar, amount of padding to add to
-    dimension \code{l}.}
-  \item{method}{String, with three possibilities: \code{ext},
-    \code{mirror}, and \code{rep}.
-
-    The first, \code{ext}, uses a padding value given by the
-    \dQuote{nearest} element of \code{a}, as measured by the Manhattan
-    metric.
-
-    The second, \code{mirror}, fills the array with alternate mirror
-    images of \code{a}, and the third, \code{rep}, fills it with copies
-    of \code{a}.}
-    \item{post}{Boolean, with default \code{TRUE} meaning to append to
+  \item{e}{If \code{l} is of length one, the  amount of padding to add to
+    dimension \code{l}}
+  \item{method}{String specifying the values of the padded elements.  See
+    details section.}
+  \item{post}{Boolean, with default \code{TRUE} meaning to append to
       \code{a} and \code{FALSE} meaning to prepend.}
+}  
+\details{
+    Argument \code{method} specifies the values of the padded elements.
+    It can be either \dQuote{\code{ext}},
+    \code{\code{mirror}}, or \dQuote{\code{rep}}.
+    
+    Specifying \code{ext} (the default) uses a padding value given by
+    the \dQuote{nearest} element of \code{a}, as measured by the
+    Manhattan metric.
+
+    Specifying \code{mirror} fills the array with alternate mirror
+    images of \code{a}; while \code{rep}  fills it with unreflected copies
+    of \code{a}.
 }
 \author{Robin K. S. Hankin}
 \note{
@@ -42,8 +48,7 @@ apad(a, l, e = NULL, method = "ext", post = TRUE)
   the same dimensionality as their array arguments but with possibly
   larger extents.  However, the functions differ in the values of the
   new array elements. Function \code{adiag()} uses a second array;
-  function \code{apad()} takes the values from its primary array argument.
-  
+  function \code{apad()} takes the values from its primary array argument. 
 }
 \seealso{\code{\link{adiag}}}
 \examples{

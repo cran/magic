@@ -15,7 +15,7 @@ fnsd(a,n)
   \item{n}{Integer.  Return the first \code{n} nonsingleton dimensions.}
 }
 \value{
-  Returns an integer vector with elements  in the range \code{1} to
+  Returns an integer vector with elements in the range \code{1} to
   \code{length(dim(a))}.
 }
 \author{Robin K. S. Hankin}

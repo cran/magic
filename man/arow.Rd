@@ -18,6 +18,11 @@ An integer matrix with the same dimensions as \code{a}, with element
 being \eqn{n_i}{n_i}.
 }
 \author{Robin K. S. Hankin}
+\note{
+This function is equivalent to, but faster than,
+\code{function(a,i){do.index(a,function(x){x[i]})}}.  However, it is
+much more complicated.
+}     
 \examples{
 a <- array(0,c(3,3,2,2))
 arow(a,2)

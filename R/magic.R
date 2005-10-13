@@ -28,12 +28,9 @@ function (..., pad = as.integer(0), do.dimnames = TRUE)
     if (length(dim.a <- dim(a)) != length(dim.b <- dim(b))) {
         stop("a and b must have identical number of dimensions")
     }
-    seq.new <- function(i) {
-      seq(length=i)
-    }
     s <- array(pad, dim.a + dim.b)
-    s <- do.call("[<-", c(list(s), lapply(dim.a, seq.new), list(a)))
-    ind <- lapply(seq(dim.b), function(i) seq.new(dim.b[[i]]) + 
+    s <- do.call("[<-", c(list(s), lapply(dim.a, seq_len), list(a)))
+    ind <- lapply(seq(dim.b), function(i) seq_len(dim.b[[i]]) + 
         dim.a[[i]])
     out <- do.call("[<-", c(list(s), ind, list(b)))
     n.a <- dimnames(a)
@@ -142,9 +139,9 @@ function (a, v=rep(1,length(dim(a))))
     }
     v <- c(v,rep(0,length(dim(a))-length(v)))
     f <- function(i) {
-        shift(seq(length=dim(a)[i]), v[i])
+        shift(seq_len(dim(a)[i]), v[i])
     }
-    do.call("[", c(list(a), sapply(1:length(dim(a)), f, simplify = FALSE)))
+    do.call("[", c(list(a), sapply(seq_len(length(dim(a))), f, simplify = FALSE)))
 }
 "as.standard" <-
 function (a) 
@@ -386,9 +383,7 @@ function (a, give.answers = FALSE, FUN = sum, boolean = FALSE)
     g <- function(jj) {
         FUN(a[sapply(jj, f)])
     }
-    ans <- do.call("expand.grid", lapply(1:d, function(...) {
-        b
-    }))
+    ans <- expand.grid(rep(list(b),d))
     diag.sums <- apply(ans, 1, g)
     dim(diag.sums) <- c(length(diag.sums)/(2^d), rep(2, d))
     if (boolean) {
@@ -790,7 +785,7 @@ function (...)
     f <- function(...) {
         0:1
     }
-    j <- array(t(do.call("expand.grid", lapply(1:16, FUN = f))), 
+    j <- array(t(expand.grid(rep(list(0:1),16))),
         c(4, 4, 65536))
     all.rowsums.eq.2 <- apply(apply(j, c(1, 3), sum) == 2, 2, 
         all)
@@ -1130,9 +1125,9 @@ function (a, i)
 
   f <- function(x) {
     if (x[2] <= 0) {
-      return(-seq(length=x[1]+x[2]))
+      return(-seq_len(x[1]+x[2]))
     } else {
-      return(seq(length = x[2]))
+      return(seq_len(x[2]))
     }
   }
   jj <- apply(cbind(dim(a),b),1,f)
@@ -1206,3 +1201,12 @@ function (a, i)
   if(is.matrix(jj)){jj <- as.list(as.data.frame(jj))}
   return(do.call("[",c(list(a), jj ,drop=FALSE)))
 }
+
+"do.index" <- function(a,f, ...){
+       jj <- function(i) {seq_len(dim(a)[i])}
+       index <- as.matrix(expand.grid(lapply(seq_len(length(dim(a))), jj),
+                                      KEEP.OUT.ATTRS = FALSE) )
+       a[index] <- apply(index, 1, f, ...)
+       return(a)
+}
+

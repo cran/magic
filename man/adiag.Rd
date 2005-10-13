@@ -19,10 +19,6 @@ adiag(... , pad=as.integer(0), do.dimnames=TRUE)
 Binds any number of arrays together, corner-to-corner.  Because the
 function is associative, this page discusses the two array case.
 
-Function \code{adiag()} requires \code{length(dim(a))==length(dim(b))}
-(the function does not guess which dimensions have been dropped; see
-examples section).  In particular, note that vectors are not coerced.
-
 If \code{x=adiag(a,b)} and \code{dim(a)=c(a_1,...,a_d)},
 \code{dim(b)=c(b_1,...,b_d)}; then \code{all(dim(x)==dim(a)+dim(b))} and
 \code{x[1:a_1,...,1:a_d]=a} and
@@ -31,10 +27,11 @@ If \code{x=adiag(a,b)} and \code{dim(a)=c(a_1,...,a_d)},
 Dimnames are preserved, if both arrays have non-null dimnames, and
 \code{do.dimnames} is \code{TRUE}.
 
-Argument \code{pad} is usually a scalar, but a vector is acceptable;
-standard recycling is used.  Be aware that the output array (of
-dimension \code{dim(a)+dim(b)}) is filled with (copies of) \code{pad}
-\emph{before} \code{a} and \code{b} are copied.  This can be confusing.
+Argument \code{pad} is usually a length-one vector, but any vector is
+acceptable; standard recycling is used.  Be aware that the output array
+(of dimension \code{dim(a)+dim(b)}) is filled with (copies of)
+\code{pad} \emph{before} \code{a} and \code{b} are copied.  This can be
+confusing.
   
 }
 \value{
@@ -42,10 +39,16 @@ Returns an array of dimensions \code{dim(a)+dim(b)} as described above.
 }
 \author{Peter Wolf with some additions by Robin Hankin}
 \note{
-In \code{adiag(a,b)}, if
-\code{a} is a scalar, it is coerced into being an array of
-dimensions \code{rep(1,length(dim(b)))}; likewise \code{b}.  If both
-\code{a} and \code{b} are scalars, return \code{diag(c(a,b))}.
+
+In \code{adiag(a,b)}, if \code{a} is a length-one vector, it is coerced
+to an array of dimensions \code{rep(1,length(dim(b)))}; likewise
+\code{b}.  If both \code{a} and \code{b} are length-one vectors, return
+\code{diag(c(a,b))}.
+
+If \code{a} and \code{b} are arrays, function \code{adiag()} requires
+\code{length(dim(a))==length(dim(b))} (the function does not guess which
+dimensions have been dropped; see examples section).  In particular,
+note that vectors are not coerced except if of length one.
 
 \code{adiag()} is used when padding magic hypercubes in the context
 of evaluating subarray sums.

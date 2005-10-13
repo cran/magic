@@ -29,6 +29,11 @@ test.corners <- function(i)
 stopifnot(all(sapply(3:n,test.corners)))
 
 
+# Now check that, in a 3x3x3 magic cube, the second element of each diagonal is the same:
+f <- function(x){x[2]}
+stopifnot(is.diagonally.correct(magiccube.2np1(1),FUN=f,boolean=FALSE,give=FALSE))
+
+
 # Now check that the first eigenvalue of a magic square is indeed
 # equal to its magic constant.
 
@@ -208,3 +213,10 @@ stopifnot(
 
              
     
+
+#some tests of do.index():
+
+f1 <- function(x){as.integer(sum(x))}
+f2 <- function(x){
+a <- array(0:0,c(2,3,4,5))
+stopifnot(identical(do.index(a,f1),arow(a,1)+arow(a,2)+arow(a,3)+arow(a,4)))
