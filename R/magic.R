@@ -142,29 +142,31 @@ function (a, v=rep(1,length(dim(a))))
     }
     v <- c(v,rep(0,length(dim(a))-length(v)))
     f <- function(i) {
-        shift(1:(dim(a)[i]), v[i])
+        shift(seq(length=dim(a)[i]), v[i])
     }
     do.call("[", c(list(a), sapply(1:length(dim(a)), f, simplify = FALSE)))
 }
 "as.standard" <-
 function (a) 
 {
+    a <- drop(a)
     d.a <- dim(a)
     if (max(d.a) <= 1 | any(d.a<1)){
         return(a)
     }
+    
     d <- length(d.a)
     corners <- as.matrix(do.call("expand.grid", lapply(1:d, function(i) c(1, 
         d.a[i]))))
     pos.of.min <- corners[which.min(a[corners]), ]
     d.a[pos.of.min > 1] <- -1
-    a <- arev(a, d.a>0)
+    a <- arev(a, d.a<0)
     return(aperm(a, order(-a[1 + diag(nrow = d)])))
 }
 "circulant" <-
 function (vec)
 {
-   if(length(vec)==1){vec <- 1:vec}
+   if(length(vec)==1){vec <- seq(length=vec)}
    n <- length(vec)
    a <- matrix(0,n,n)
    out <- process(1-row(a)+col(a),n)
@@ -284,11 +286,6 @@ function (m, base=10, give.answers=FALSE)
 {
     n <- nrow(m)
     S <- function(i){ashift(diag(n),c(i,0))}
-    P <- function(k){
-      out <- matrix(0,n,n)
-      out[k,k] <- 1
-      return(force.integer(out))
-    }
     f.maj <- function(i){
       is.persymmetric(m %*% S(i) %*% t(m))
     }
@@ -301,7 +298,6 @@ function (m, base=10, give.answers=FALSE)
     col.sufficient <- is.persymmetric(m %*% t(m))
     major.diag.sufficient <- all(sapply(1:nrow(m),f.maj))
     minor.diag.sufficient <- all(sapply(1:nrow(m),f.min))
-
     
     sufficient <- row.sufficient & col.sufficient & major.diag.sufficient & minor.diag.sufficient
       
@@ -512,7 +508,6 @@ function (m, give.answers = FALSE, FUN = sum, boolean = FALSE)
 "is.perfect" <-
 function (a, give.answers = FALSE, FUN = sum, boolean = FALSE) 
 {
-    n <- dim(a)[1]
     d <- length(dim(a))
     putative.magic.constant <- FUN(do.call("[", c(list(a), alist(a = )$a, 
         rep(1, d - 1))))
@@ -611,8 +606,18 @@ function (a)
     if(is.list(a)){
       return(sapply(a,match.fun(sys.call()[[1]])))
     }
-    
-    identical(a,as.standard(a))
+    a <- drop(a)
+    d.a <- dim(a)
+    if(any(d.a==0)){return(TRUE)}
+    d <- length(d.a)
+    corners <- as.matrix(do.call("expand.grid", lapply(1:d, function(i) c(1, 
+        d.a[i]))))
+    corners.correct <- a[1] <= min(a[corners])
+
+    jj <- 1 + diag(nrow = d)
+    adjacent.correct <- all(diff(a[jj])<0)
+
+    return(corners.correct & adjacent.correct)
 }
 "le" <-
 function (m1, m2) 
@@ -799,10 +804,10 @@ function (...)
         magics[j] <- rev(magics[j])
         return(magics)
     }
-    f <- function(i) {
+    fun <- function(i) {
         ref(magics[, , i], j[, , i])
     }
-    return(array(sapply(1:n, f), c(8, 8, n)))
+    return(array(sapply(1:n, fun), c(8, 8, n)))
 }
 "magic.constant" <-
 function (n, d = 2, start = 1) 
@@ -1013,7 +1018,7 @@ function (chosen = 1:6, vals = 2^(0:5))
 function (x, n) 
 {
     x <- x%%n
-    x[x == 0] <- n
+    x[x == 0] <- as.integer(n)
     return(x)
 }
 "recurse" <-
@@ -1039,6 +1044,7 @@ function (start = 1:n, perm, i)
 function (x, i=1) 
 {
     n <- length(x)
+    if(n==0){return(x)}
     i <- i%%n
     if (i == 0) {
         return(x)

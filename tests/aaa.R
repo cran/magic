@@ -29,12 +29,18 @@ test.corners <- function(i)
 stopifnot(all(sapply(3:n,test.corners)))
 
 
-# Now check that the first eigenvalue of a magic square is indeed equal to its magic constant:
-f <- function(i){minmax(c(eigen(magic(i),FALSE,TRUE)$values[1],magic.constant(i)))}
+# Now check that the first eigenvalue of a magic square is indeed
+# equal to its magic constant.
+
+# First, define a wrapper to ensure that eigen() returns an integer:
+
+eigen.wrap <- function(M){as.integer(round(Re(eigen(M,FALSE,TRUE)$values)))}
+
+f <- function(i){minmax(c(eigen.wrap(magic(i))[1],magic.constant(i)))}
 stopifnot(sapply(3:n,f))
 
 # Now check that the sum of eigenvalues 2,...,n of a magic square is zero:
-f <- function(i){minmax(c(1,1+sum(eigen(magic(i),FALSE,TRUE)$values[2:i])))}
+f <- function(i){minmax(c(1,1+sum(eigen.wrap(magic(i))[-1])))}
 stopifnot(sapply(3:n,f))
 
 
@@ -151,6 +157,7 @@ stopifnot(identical(arot(a,2),arev(a,1:2)))
 
 #now some tests of shift:
 stopifnot(identical(c(as.integer(10),1:9),shift(1:10)))
+stopifnot(identical(shift(1:10,-2),c(3:10,1:2)))
 stopifnot(identical(magic(4),ashift(ashift(ashift(ashift(magic(4)))))))
 stopifnot(identical(ashift(ashift(ashift(magiccube.2np1(1)))),magiccube.2np1(1)))
 a <- array(1:24,2:4)
@@ -177,6 +184,7 @@ stopifnot(minmax(subsums(a,2)))
 f1 <-
   function(a){
     zero <- as.integer(0)
+    identical(ashift(a,dim(a)),a) &
     identical(apltake(a,dim(a)),a) &
     identical(apltake(a,-dim(a)),a) &
     identical(apldrop(a,dim(a)*0),a) &
