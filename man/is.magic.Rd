@@ -64,7 +64,9 @@ is.latin(m,give.answers=FALSE)
   which
   \eqn{a_{i,j}+a_{n+1-i,n+1-j}=n^2+1}{a[i,j]+a[n+1-i,n+1-j]=n^2+1}.
   Note that an associative semimagic square is magic; see also
-  \code{is.square.palindromic()}. 
+  \code{is.square.palindromic()}.    The definition extends to magic
+  hypercubes: a hypercube \code{a} is associative if \code{a+arev(a)} is
+  constant. 
 
   A \emph{latin square} of size \eqn{n\times n}{n-by-n} is one in which
   each column and each row comprises the integers 1 to n (not

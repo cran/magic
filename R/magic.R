@@ -1,5 +1,5 @@
 "adiag" <-
-function (..., pad = 0, do.dimnames = TRUE) 
+function (..., pad = as.integer(0), do.dimnames = TRUE) 
 {
     args <- list(...)
     if (length(args) == 1) {
@@ -29,12 +29,7 @@ function (..., pad = 0, do.dimnames = TRUE)
         stop("a and b must have identical number of dimensions")
     }
     seq.new <- function(i) {
-        if (i == 0) {
-            return(NULL)
-        }
-        else {
-            return(1:i)
-        }
+      seq(length=i)
     }
     s <- array(pad, dim.a + dim.b)
     s <- do.call("[<-", c(list(s), lapply(dim.a, seq.new), list(a)))
@@ -101,19 +96,51 @@ function (m, FUN = sum)
 "arev" <-
 function(a, swap=TRUE)
 {
-    if(is.vector(a)){a <- as.matrix(a)}
+    if(is.vector(a)){return(rev(a))}
     d <- dim(a)
     n <- length(d)
-    if(length(swap)==1){swap <- rep(swap,n)}
-    f <- function(i){swap[i]*d[i]:1+ (!swap[i])*1:d[i]}
-    do.call("[", c(list(a), sapply(1:n, f, simplify=FALSE)))
+    if(is.logical(swap)){
+      if(length(swap)==1){swap <- rep(swap,n)}
+    } else {
+      swap <- 1:n %in% swap
+    }
+    f <- function(i){
+      if(d[i]>0){
+        return(swap[i]*d[i]:1+ (!swap[i])*1:d[i])
+      } else {
+        return(0)
+      }
+    }
+    do.call("[", c(list(a), sapply(1:n, f, simplify=FALSE),drop=FALSE))
 }
+"arot" <- 
+function (a, rights=1, pair=1:2) 
+{
+    d <- dim(a)
+    n <- length(d)
+    jj <- 1:n
+    jj[pair] <- shift(jj[pair],1)
+    rights <- rights%%4
+    if(rights==0){
+      return(a)
+    } else if (rights==1){
+      return(aperm(arev(a,pair[2]),jj))
+    } else if (rights==2){
+      return(arev(a,pair))
+    } else if (rights==3){
+      return(aperm(arev(a,pair[1]),jj))
+    } else {
+      stop("rights must be one of 0,1,2,3")
+    }
+}
+
 "ashift" <-
-function (a, v) 
+function (a, v=rep(1,length(dim(a))))
 {
     if (is.vector(a)) {
         return(shift(a, v))
     }
+    v <- c(v,rep(0,length(dim(a))-length(v)))
     f <- function(i) {
         shift(1:(dim(a)[i]), v[i])
     }
@@ -123,28 +150,22 @@ function (a, v)
 function (a) 
 {
     d.a <- dim(a)
-    if (max(d.a) <= 1) {
+    if (max(d.a) <= 1 | any(d.a<1)){
         return(a)
     }
     d <- length(d.a)
     corners <- as.matrix(do.call("expand.grid", lapply(1:d, function(i) c(1, 
-        dim(a)[i]))))
+        d.a[i]))))
     pos.of.min <- corners[which.min(a[corners]), ]
-    d.a[pos.of.min > 1] <- -d.a[pos.of.min > 1]
-    f <- function(n) {
-        if (n > 0) {
-            1:n
-        }
-        else {
-            (-n):1
-        }
-    }
-    a <- do.call("[", c(list(a), lapply(d.a, f)))
+    d.a[pos.of.min > 1] <- -1
+    a <- arev(a, d.a>0)
     return(aperm(a, order(-a[1 + diag(nrow = d)])))
 }
 "circulant" <-
-function (n,vec=1:n)
+function (vec)
 {
+   if(length(vec)==1){vec <- 1:vec}
+   n <- length(vec)
    a <- matrix(0,n,n)
    out <- process(1-row(a)+col(a),n)
    out[] <- vec[out]
@@ -163,7 +184,7 @@ function (a, offset = 0, nw.se = TRUE)
     jj <- process(sweep(indices, 2, c(0, offset), "+"), n)
     return(a[jj])
 }
-"dimension" <-
+"arow" <-
 function (a, i) 
 {
     p <- 1:prod(dim(a))
@@ -256,7 +277,7 @@ function (m)
     if(is.list(m)){
       return(sapply(m,match.fun(sys.call()[[1]])))
     }
-    is.magic(m) & minmax(c(m + rev(m), nrow(m)^2 + 1))
+    is.magic(m) & minmax(c(m + arev(m)))
 }
 "is.square.palindromic" <-
 function (m, base=10, give.answers=FALSE)
@@ -347,16 +368,13 @@ function (m)
     if(is.list(m)){
       return(sapply(m,match.fun(sys.call()[[1]])))
     }
-    all(m==rev(m))
+    all(m==arev(m))
   }
 "is.circulant" <-
 function(m,dir=rep(1,length(dim(m))))
 {
-
   return(all(m == ashift(m,dir)))
 }
-    
-  
 "is.diagonally.correct" <-
 function (a, give.answers = FALSE, FUN = sum, boolean = FALSE) 
 {
@@ -594,7 +612,7 @@ function (a)
       return(sapply(a,match.fun(sys.call()[[1]])))
     }
     
-    minmax(a - as.standard(a))
+    identical(a,as.standard(a))
 }
 "le" <-
 function (m1, m2) 
@@ -804,9 +822,9 @@ function (m)
 
     n <- 2 * m + 1
     jj <- array(1:n, rep(n, 3))
-    x <- dimension(jj, 1)
-    y <- dimension(jj, 2)
-    z <- dimension(jj, 3)
+    x <- arow(jj, 1)
+    y <- arow(jj, 2)
+    z <- arow(jj, 3)
     return(force.integer(((x - y + z - 1) - n * floor((x - y + z - 1)/n)) * 
                          n * n + ((x - y - z) - n * floor((x - y - z)/n)) * n + 
                          ((x + y + z - 2) - n * floor((x + y + z - 2)/n)) + 1))
@@ -817,7 +835,7 @@ function (m, d = 3)
     n <- 4 * m
     a <- array(0, rep(2, d))
     jj.f <- function(i) {
-        dimension(a, i)
+        arow(a, i)
     }
     x <- apply(sapply(1:d, jj.f, simplify = TRUE), 1, sum)
     dim(x) <- rep(2, d)
@@ -1018,7 +1036,7 @@ function (start = 1:n, perm, i)
     return(start[perm.final])
 }
 "shift" <-
-function (x, i) 
+function (x, i=1) 
 {
     n <- length(x)
     i <- i%%n
@@ -1051,13 +1069,15 @@ function (m, square = magic.2np1(m))
     return(force.integer(out))
 }
 "subsums" <-
-function (a, p, FUN = "sum", wrap = TRUE, pad.value = 0) 
-{
+function (a, p, FUN = "sum", wrap = TRUE, pad = 0) 
+{   
+    if(length(p)==1){p <- 0*dim(a)+p}
     if (wrap == FALSE) {
-        jj <- a.block.diag(array(pad.value, p - 1), a)
-        return(Recall(jj, p, FUN = FUN, pad.value = pad.value, 
+        jj <- adiag(array(pad, p - 1), a,pad=pad)
+        return(Recall(jj, p, FUN = FUN, pad = pad, 
             wrap = TRUE))
     }
+
     if (is.vector(p)) {
         sub.coords <- 1 - as.matrix(expand.grid(sapply(p, function(i) {
             1:i
@@ -1092,4 +1112,91 @@ function (a, i)
         a <- a[, ncol(a):1]
     }
     return(a)
+}
+
+
+"apltake" <- function(a,b, give.indices=FALSE){
+
+  if(is.vector(a)){
+    return(as.vector(Recall(as.matrix(a),b=b,give.indices=give.indices)))
+  }
+  b <- c(b,dim(a)[seq(from=length(b)+1,length=length(dim(a))-length(b),by=1)])
+
+  f <- function(x) {
+    if (x[2] <= 0) {
+      return(-seq(length=x[1]+x[2]))
+    } else {
+      return(seq(length = x[2]))
+    }
+  }
+  jj <- apply(cbind(dim(a),b),1,f)
+  if(is.matrix(jj)){jj <- as.list(as.data.frame(jj))}
+  if(give.indices){
+    return(jj)
+  } else {
+    return(do.call("[",c(list(a),jj ,drop=FALSE)))
+  }
+}
+
+"apldrop" <- function(a, b, give.indices=FALSE){
+    if(is.vector(a)){
+    return(as.vector(Recall(as.matrix(a),b=b,give.indices=give.indices)))
+  }
+  b <- c(b,rep(0,length(dim(a))-length(b),by=1))
+  f <- function(x){
+    if(x[2] <= 0){
+      return(seq(length=x[1]+x[2]))
+    } else {
+      return(-seq(length=x[2]))
+    }
+  }
+  jj <- apply(cbind(dim(a),b),1,f)
+  if(is.matrix(jj)){jj <- as.list(as.data.frame(jj))}
+  if(give.indices){
+    return(jj)
+  } else {
+    return(do.call("[",c(list(a),jj ,drop=FALSE)))
+  }
+}
+
+
+"apltake<-" <- function(a,b,value){
+  do.call("[<-",c(list(a),apltake(a,b,give.indices=TRUE),value))
+}
+
+"apldrop<-" <- function(a,b,value){
+  do.call("[<-",c(list(a),apldrop(a,b,give.indices=TRUE),value))
+}
+
+"fnsd" <- function(a,n=1){
+    return(which(dim(a)>1)[1:n])
+  }
+
+"apad" <- function(a, l, e=NULL, method="ext", post=TRUE){
+  if(is.vector(a)){
+    return(drop(Recall(as.matrix(a), l=c(l,0), e=e, method=method,post=post)))
+  }
+  if(length(l)==1){
+    jj <- rep(0,length(dim(a)))
+    jj[l] <- e
+    l <- jj
+  }
+  if(post){
+    f <-
+      switch(method,
+             ext    = function(x){c(1:x[1],rep(x[1],x[2]))},
+             mirror = function(x){ rep(c(1:x[1],x[1]:1),length=x[1]+x[2])},
+             rep    = function(x){ rep(1:x[1],length=x[1]+x[2])}
+             )
+  } else {
+    f <-
+      switch(method,
+             ext    = function(x){c(rep(1,x[2]), 1:x[1])},
+             mirror = function(x){ rev(rep(c(x[1]:1,1:x[1]),length=x[1]+x[2]))},
+             rep    = function(x){ rev(rep(x[1]:1,length=x[1]+x[2]))}
+             )
+  }
+  jj <- apply(cbind(dim(a),l),1,f)
+  if(is.matrix(jj)){jj <- as.list(as.data.frame(jj))}
+  return(do.call("[",c(list(a), jj ,drop=FALSE)))
 }

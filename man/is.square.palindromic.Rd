@@ -26,7 +26,9 @@ The following tests apply to a general square matrix \code{m} of size
 
 A \emph{centrosymmetric} square is one in which
 \code{a[i,j]=a[n+1-i,n+1-j]}; use \code{is.centrosymmetric()} to test
-for this (compare an \emph{associative} square).
+for this (compare an \emph{associative} square).  Note that this
+definition extends naturally to hypercubes: a hypercube \code{a} is
+centrosymmetric if \code{all(a==arev(a))}.
 
 A \emph{persymmetric square} is one in which
 \code{a[i,j]=a[n+1-j,n+1-i]}; use \code{is.persymmetric()} to test for

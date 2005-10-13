@@ -1,12 +1,12 @@
 library(magic)
 n <- 10
 
-#first test magic() for magicness, standardness, and normality for magic(3)..magic(n):
+# first test magic() for magicness, standardness, and normality for magic(3)..magic(n):
 stopifnot(is.magic(magic(3:n)))
 stopifnot(is.standard(magic(3:n)))
 stopifnot(is.normal(magic(3:n)))
 
-#now test some of the specific algorithms:
+# now test some of the specific algorithms:
 stopifnot(is.magic(strachey(1:n)))
 stopifnot(is.magic(lozenge (1:n)))
 stopifnot(is.magic(magic.4n(1:n)))
@@ -14,12 +14,12 @@ stopifnot(is.magic(magic.4n(1:n)))
 stopifnot(sapply(1:n,function(i){is.square.palindromic(circulant(i))}))
 
 
-#now test for magic.2np1() giving a generalized circulant:
+# now test for magic.2np1() giving a generalized circulant:
 stopifnot(sapply(1:n,function(i){is.circulant(magic.2np1(i)%%(2*i+1),c(2,-1))}))
 
 
-## Now test that is.diagonally.correct() in fact extracts the correct elements,
-## using a function that returns just the first element:
+# Now test that is.diagonally.correct() in fact extracts the correct elements,
+# using a function that returns just the first element:
 test.corners <- function(i)
 {
   a <- magic(i)
@@ -29,19 +29,19 @@ test.corners <- function(i)
 stopifnot(all(sapply(3:n,test.corners)))
 
 
-## Now check that the first eigenvalue of a magic square is indeed equal to its magic constant:
+# Now check that the first eigenvalue of a magic square is indeed equal to its magic constant:
 f <- function(i){minmax(c(eigen(magic(i),FALSE,TRUE)$values[1],magic.constant(i)))}
 stopifnot(sapply(3:n,f))
 
-## Now check that the sum of eigenvalues 2,...,n of a magic square is zero:
+# Now check that the sum of eigenvalues 2,...,n of a magic square is zero:
 f <- function(i){minmax(c(1,1+sum(eigen(magic(i),FALSE,TRUE)$values[2:i])))}
 stopifnot(sapply(3:n,f))
 
 
-## Check hudson() for 6n+1 and 6n-1:
+# Check hudson() for 6n+1 and 6n-1:
 stopifnot(sapply(c(6*(1:n)+1,6*(1:n)-1),function(i){is.magic(hudson(i))}))
 
-## Check magichypercube.4n() for a range of dimensions and orders:
+# Check magichypercube.4n() for a range of dimensions and orders:
 stopifnot(apply(expand.grid(m=1:2,d=2:4),1,function(x){is.magichypercube(magichypercube.4n(x[1],x[2]))}))
 
 ## Check magiccube.2np1():
@@ -78,6 +78,7 @@ stopifnot(is.perfect(perfectcube6))
 data(Frankenstein)
 stopifnot(is.perfect(Frankenstein))
 
+# Comment out the line below because it takes too long
 #stopifnot(apply(magic.8(),3,is.magic))
 
 ## Now check magic.product() works:
@@ -100,12 +101,102 @@ stopifnot(identical(adiag(a2,a2),kronecker(diag(2),a2)))
 stopifnot(identical(adiag(a3,a3,a3),kronecker(diag(3),a3)))
 stopifnot(identical(adiag(matrix(1,0,5),matrix(1,5,0),pad=1:5), kronecker(t(rep(1,5)),1:5)))
 
+# Now some more tests.
+# First, set the dimension.  Feel free to change this!
+n <- 6 
 
-#now some tests for is.circulant():
+# Check that pad value is correctly used:
+a <- array(43,rep(2,n))
+stopifnot(minmax(adiag(a,43,pad=43)))
+
+# Check that adiag() plays nicely with subsums():
+a <- array(1,rep(1,n))
+stopifnot(minmax(subsums(adiag(a,a),2)))
+
+# And another test:
+a <- array(1,rep(1,n))
+jj1 <- subsums(adiag(a,0,a),2,wrap=F)
+x <- array(1,rep(2,n))
+jj2 <- adiag(x,x)
+stopifnot(identical(jj1,jj2))
+
+# Now some tests for is.circulant():
 a <- array(0,rep(2,10))
 a[1] <- a[1024] <- 1
 stopifnot(is.circulant(a))
 
-#"break" a by changing just one (randomly chosen) element:
+# "break" a by changing just one (randomly chosen) element:
 a[1,1,1,1,2,1,2,1,1,1] <- 1
 stopifnot(!is.circulant(a))
+
+# Now test arev() with some tests:
+a <- array(1:32,rep(2,5))
+stopifnot(identical(as.vector(arev(a)),rev(a)))
+
+b <-  c(TRUE,FALSE,TRUE,FALSE,TRUE)
+stopifnot(identical(a,arev(arev(a,b),b)))
+
+stopifnot(identical(a[,2:1,,,],arev(a,2)))
+stopifnot(identical(arev(a,c(2:4)),a[,2:1,2:1,2:1,]))
+
+
+# now some tests of arot():
+stopifnot(identical(arot(arot(a)),arot(a,2)))
+stopifnot(identical(arot(arot(arot(a))),arot(a,3)))
+b <- c(2,4)
+stopifnot(identical(arot(arot(arot(a,p=b),p=b),p=b),arot(a,p=b,3)))
+stopifnot(identical(arot(a,2),arev(a,1:2)))
+
+
+
+#now some tests of shift:
+stopifnot(identical(c(as.integer(10),1:9),shift(1:10)))
+stopifnot(identical(magic(4),ashift(ashift(ashift(ashift(magic(4)))))))
+stopifnot(identical(ashift(ashift(ashift(magiccube.2np1(1)))),magiccube.2np1(1)))
+a <- array(1:24,2:4)
+stopifnot(identical(a,ashift(a,dim(a))))
+
+
+stopifnot(is.magichypercube(ashift(magichypercube.4n(1))))
+stopifnot(is.semimagichypercube(ashift(magichypercube.4n(1),1:3)))
+stopifnot(is.semimagichypercube(ashift(magichypercube.4n(1,d=5),c(1,2,3,2,1))))
+
+
+zero.extent <- array(0,c(3,0,3,2,3))
+stopifnot(is.standard(zero.extent))
+
+
+# Now test subsums.  With wrap=TRUE, a matrix with identical
+# entries should have identical subsums:
+a <- array(1,c(2,2,2,2,3,2,2))
+stopifnot(minmax(subsums(a,2)))
+
+# Now sundry tests of apltake(), apldrop(), apad(), arev() etc:
+
+
+f1 <-
+  function(a){
+    zero <- as.integer(0)
+    identical(apltake(a,dim(a)),a) &
+    identical(apltake(a,-dim(a)),a) &
+    identical(apldrop(a,dim(a)*0),a) &
+    identical(apldrop(adiag(a,zero),-1+dim(a)*0),a) &
+    identical(apldrop(adiag(a,a),dim(a)),a) &
+    identical(apltake(adiag(a,a),dim(a)),a) &
+    identical(apltake(adiag(a,a),-dim(a)),a) &
+    identical(apldrop(apad(a,dim(a)),-dim(a)),a) &
+    identical(apldrop(apad(a,dim(a),method="mirror"),dim(a)),arev(a)) &
+    identical(apldrop(apad(a,dim(a)),dim(a)),array(do.call("[",c(list(a),as.list(dim(a)))),dim(a))) &
+    identical(a,apldrop(ashift(adiag(a,a),dim(a)),dim(a)))    
+  }
+
+
+stopifnot(
+          f1(magichypercube.4n(m=1,d=4)) &
+          f1(array(1:24,2:4))            &
+          f1(array(1:64,rep(2,7)))       &
+          f1(matrix(1:30,5,6))
+          )
+
+             
+    

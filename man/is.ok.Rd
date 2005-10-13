@@ -15,5 +15,9 @@ is.ok(vec, n=length(vec), d=2)
 \item{d}{Dimension of square or hypercube.  Default corresponds to a square.}
 }
 \author{Robin K. S. Hankin}
+\examples{
+ is.ok(magic(5)[1,])
+
+}
 \keyword{array}
 

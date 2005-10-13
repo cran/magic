@@ -5,11 +5,12 @@
   Array generalization of blockdiag()
 }
 \usage{
-adiag(... , pad=0, do.dimnames=TRUE)
+adiag(... , pad=as.integer(0), do.dimnames=TRUE)
 }
 \arguments{
   \item{...}{Arrays to be binded together}
-  \item{pad}{Value to pad array with}
+  \item{pad}{Value to pad array with; note default keeps integer status
+    of arrays}
   \item{do.dimnames}{Boolean, with default \code{TRUE} meaning to return
     dimnames if possible.  Set to \code{FALSE} if performance is an
     issue.}
@@ -49,7 +50,7 @@ dimensions \code{rep(1,length(dim(b)))}; likewise \code{b}.  If both
 \code{adiag()} is used when padding magic hypercubes in the context
 of evaluating subarray sums.
 }
-\seealso{\code{\link{subsums}}}
+\seealso{\code{\link{subsums}}, \code{\link{apad}}}
 \examples{
  a <- array( 1,c(2,2))
  b <- array(-1,c(2,2))
@@ -82,8 +83,14 @@ adiag(q,q,pad=1:4)
 adiag(q,q,pad=1:36)
 
 
+
+# Now, a use for arrays with dimensions of zero extent:
+a <- matrix(1:9,3,3)
+zero <- array(0,c(0,2))
+
+adiag(a,zero)    # Observe how this has
+                 # added no (ie zero) rows to a
+
 }
 
 \keyword{array}
-
-

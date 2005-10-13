@@ -39,6 +39,9 @@ Note that the inequalities are strict as hypercubes are assumed to be
 normal.  As of version 1.3-1, \code{as.standard()} will accept arrays of
 any dimension (ie arrays \code{a} with \code{minmax(dim(a))==FALSE} will
 be handled sensibly).
+
+An array with any dimension of extent zero is in standard form by
+definition. 
   
 \code{is.standard()} returns \code{TRUE} if the magic square or
 hypercube is in standard form.  \code{is.standard()} and

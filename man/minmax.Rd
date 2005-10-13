@@ -21,5 +21,9 @@ minmax(x, tol=1e-6)
 }
 \author{Robin K. S. Hankin}
 \seealso{is.magic()}
+\examples{
+data(Ollerenshaw)
+minmax(subsums(Ollerenshaw,2))  #should be TRUE, as per is.2x2.correct()
+}
 \keyword{array}
 

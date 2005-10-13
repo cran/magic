@@ -6,14 +6,20 @@
 Shift origin of arrays and vectors. 
 }
   \usage{
-shift(x, i)
-ashift(a, v)
+shift(x, i=1)
+ashift(a, v=rep(1,length(dim(a))))
 }
 \arguments{
   \item{x}{Vector to be shifted}
-  \item{i}{Number of places elements to be shifted}
+  \item{i}{Number of places elements to be shifted, with default value
+    of 1 meaning to put the last element first, followed by the first
+    element, then the second, etc}
   \item{a}{Array to be shifted}
-  \item{v}{Vector of numbers to be shifted in each dimension}
+  \item{v}{Vector of numbers to be shifted in each dimension, with
+    default value corresponding to \code{shift()}ing each dimension by 1
+    unit.  If the length of \code{v} is less than \code{length(dim(a))},
+    it is padded with zeroes (thus a scalar value of \code{i} indicates
+    that the first dimension is to be shifted by \code{i} units)}
 }
 \details{
   Function \code{shift(x,n)} returns \eqn{P^n(x)}{P^n(x)} where
