@@ -37,17 +37,17 @@ is.latin(m,give.answers=FALSE)
     \code{m} is magic etc if all applications of \code{FUN} are identical.}
 }
 \details{
-  A \emph{semimagic square} is one all of whose row sums equal all its
+  A \dfn{semimagic square} is one all of whose row sums equal all its
   columnwise sums (ie the magic constant).
 
-  A \emph{magic square} is a semimagic square with the sum of both unbroken
+  A \dfn{magic square} is a semimagic square with the sum of both unbroken
   diagonals equal to the magic constant.
 
-  A \emph{panmagic square} is a magic square all of whose broken diagonals
+  A \dfn{panmagic square} is a magic square all of whose broken diagonals
   sum to the magic constant.  Ollerenshaw calls this a ``pandiagonal''
   square.
 
-  A \emph{most perfect} square has all 2-by-2 arrays anywhere within the
+  A \dfn{most-perfect} square has all 2-by-2 arrays anywhere within the
   square summing to \eqn{2S} where \eqn{S=n^2+1}{S=n^2+1}; and all pairs
   of integers \eqn{n/2}{n/2} distant along the same major (NW-SE) diagonal
   sum to \eqn{S}{S} (note that the \eqn{S}{S} used here differs from
@@ -55,12 +55,12 @@ is.latin(m,give.answers=FALSE)
   first condition is tested by \code{\link{is.2x2.correct}} and the second
   by \code{\link{is.bree.correct}}.
   
-  All most perfect squares are panmagic.
+  All most-perfect squares are panmagic.
 
-  A \emph{normal square} is one that contains \eqn{n^2}{n^2} consecutive
+  A \dfn{normal square} is one that contains \eqn{n^2}{n^2} consecutive
   integers (typically starting at 0 or 1).
 
-  An \emph{associative square} is a magic square in
+  An \dfn{associative square} is a magic square in
   which
   \eqn{a_{i,j}+a_{n+1-i,n+1-j}=n^2+1}{a[i,j]+a[n+1-i,n+1-j]=n^2+1}.
   Note that an associative semimagic square is magic; see also
@@ -68,7 +68,7 @@ is.latin(m,give.answers=FALSE)
   hypercubes: a hypercube \code{a} is associative if \code{a+arev(a)} is
   constant. 
 
-  A \emph{latin square} of size \eqn{n\times n}{n-by-n} is one in which
+  A \dfn{latin square} of size \eqn{n\times n}{n-by-n} is one in which
   each column and each row comprises the integers 1 to n (not
   necessarily in that order).  Function \code{is.latin()} is a wrapper
   for \code{is.latinhypercube()} because there is no natural way to

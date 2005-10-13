@@ -20,6 +20,5 @@ magic.4np2(m)
 \examples{
 magic.4np2(1)
 is.magic(magic.4np2(3))
-  }
 }
 \keyword{array}

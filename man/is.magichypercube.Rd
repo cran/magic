@@ -30,7 +30,7 @@ is.latinhypercube(a, give.answers=FALSE)
   dimension \eqn{d}{d} and order \eqn{n}{n}---and thus has \eqn{n^d}{n^d}
   elements).
 
-  A \emph{semimagic hypercube} has all \dQuote{rook's move} sums equal
+  A \dfn{semimagic hypercube} has all \dQuote{rook's move} sums equal
   to the magic constant (that is, each
   \eqn{\sum a[i_1,i_2,\ldots,i_{r-1},,i_{r+1},
   \ldots,i_d]}{sum(a[i_1,i_2, \ldots,i_{r-1},,i_{r+1},\ldots,i_d])}
@@ -47,13 +47,13 @@ is.latinhypercube(a, give.answers=FALSE)
   the function to be taken over each of the \code{d} dimensions.
   Currently requires \code{FUN} to return a scalar.
   
-  A \emph{Latin hypercube} is one in which each line of elements whose
+  A \dfn{Latin hypercube} is one in which each line of elements whose
   coordinates differ in only one dimension comprises the numbers
   \eqn{1}{1}  to \eqn{n}{n} (or \eqn{0}{0} to \eqn{n-1}{n-1}), not
   necessarily in that order.  Each integer thus appears
   \eqn{n^{d-1}}{n^(d-1)} times.
   
-  A \emph{magic hypercube} is a semimagic hypercube with the additional
+  A \dfn{magic hypercube} is a semimagic hypercube with the additional
   requirement that all \eqn{2^{d-1}}{2^(d-1)} long (ie extreme
   point-to-extreme point) diagonals sum correctly.  Correct diagonal
   summation is tested by \code{is.diagonally.correct()}; by specifying a

@@ -24,7 +24,7 @@ apad(a, l, e = NULL, method = "ext", post = TRUE)
 \details{
     Argument \code{method} specifies the values of the padded elements.
     It can be either \dQuote{\code{ext}},
-    \code{\code{mirror}}, or \dQuote{\code{rep}}.
+    \dQuote{\code{mirror}}, or \dQuote{\code{rep}}.
     
     Specifying \code{ext} (the default) uses a padding value given by
     the \dQuote{nearest} element of \code{a}, as measured by the

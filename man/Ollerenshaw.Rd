@@ -8,8 +8,7 @@ A 12-by-12 most perfect square due to Ollerenshaw
 \usage{data(Ollerenshaw)}
 \source{
   \dQuote{Most perfect pandiagonal magic squares}, K. Ollerenshaw and D. Bree,
-  1998, Institute of Mathematics and its applications}
- 
+  1998, Institute of Mathematics and its applications
 }
 \examples{
 data(Ollerenshaw)

@@ -2,7 +2,7 @@
 \alias{magic.prime}
 \title{Magic squares prime order}
 \description{
-Produces magic squares of order using the standard method}
+Produces magic squares of order using the standard method
 }
 \usage{
 magic.prime(n,i=2,j=3)

@@ -41,7 +41,6 @@ subsums(a,p,FUN="sum",wrap=TRUE, pad=0)
     the value used   to pad the array with.  Use a \dQuote{neutral} value here;
     for example, if \code{FUN=sum}, then use 0; if \code{max}, use
     \eqn{-\infty}{-Inf}.}
-  }
 }
 \details{
   The offset is specified so that \code{allsums(a,v)[1,1,...,1]=
