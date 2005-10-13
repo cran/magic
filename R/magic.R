@@ -90,6 +90,33 @@ function (m, FUN = sum)
     return(list(rowsums = rowsums, colsums = colsums, majors = majors, 
         minors = minors))
 }
+
+"aplus" <-
+function(...){
+  args <- list(...)
+  if (length(args) == 1) {
+    return(args[[1]])
+  }
+  if (length(args) > 2) {
+    jj <- do.call("Recall", c(args[-1]))
+    return(do.call("Recall", c(list(args[[1]]), list(jj))))
+  }
+  
+  a <- args[[1]]
+  b <- args[[2]]
+  
+  dima <- dim(a)
+  dimb <- dim(b)
+  
+  stopifnot(length(dima)==length(dimb))
+  
+  out <- array(0,pmax(dima,dimb))
+  return(
+         do.call("[<-",c(list(out),lapply(dima,seq_len),list(a)))+
+         do.call("[<-",c(list(out),lapply(dimb,seq_len),list(b)))
+         )
+}
+  
 "arev" <-
 function(a, swap=TRUE)
 {
@@ -563,6 +590,12 @@ function (m, give.answers = FALSE, FUN = sum, boolean = FALSE)
         return(answer)
     }
 }
+"is.semimagic.default" <-
+function(m)
+{
+    minmax(c(rowSums(m),colSums(m)))
+}
+  
 "is.semimagichypercube" <-
 function (a, give.answers = FALSE, FUN = sum, boolean = FALSE) 
 {

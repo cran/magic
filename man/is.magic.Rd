@@ -2,6 +2,7 @@
 \alias{is.magic}
 \alias{is.panmagic}
 \alias{is.semimagic}
+\alias{is.semimagic.default}
 \alias{is.associative}
 \alias{is.normal}
 \alias{is.mostperfect}
@@ -18,6 +19,7 @@
 is.magic(m, give.answers = FALSE, FUN=sum, boolean=FALSE) 
 is.panmagic(m, give.answers = FALSE, FUN=sum, boolean=FALSE) 
 is.semimagic(m, give.answers = FALSE, FUN=sum, boolean=FALSE) 
+is.semimagic.default(m)
 is.associative(m)
 is.normal(m)
 is.mostperfect(m,give.answers=FALSE)
@@ -94,8 +96,21 @@ is.latin(m,give.answers=FALSE)
   other size windows use \code{subsums()} directly.
   Function \code{is.mostperfect()} returns both of these.
 
+  Function \code{is.semimagic.default()} returns \code{TRUE} if the
+  argument is semimagic [with respect to \code{sum()}] using a faster
+  method than \code{is.semimagic()}.
 }
 \note{
+  Functions that take a \code{FUN} argument apply that function to each
+  row, column, and diagonal as necessary.  If \code{FUN} takes its
+  default value of \code{sum()}, the sum will be returned; if
+  \code{prod()}, the product will be returned, and so on.  There are
+  many choices for this argument that produce interesting tests;
+  consider \code{FUN=max}, for example.  With this, a \dQuote{magic}
+  square is one whose row, sum and (leading) diagonals have identical
+  maxima.  Thus \code{diag(5)} is magic with respect to \code{max()},
+  but \code{diag(6)} isn't.
+    
   Function \code{is.magic()} is vectorized; if a list is supplied, the
   defaults are assumed.
 }
