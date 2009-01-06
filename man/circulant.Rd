@@ -17,27 +17,27 @@ is.circulant(m,dir=rep(1,length(dim(m))))
     circulantism}
   \item{dir}{In \code{is.circulant()}, the direction of the diagonal.
     In a matrix, the default value (\code{c(1,1)}) traces the major
-    diagonals.}
+    diagonals}
 }
 \details{
-  A matrix \eqn{a}{a} is circulant if all major diagonals, including
-  broken diagonals, are uniform;
-  ie if \eqn{a_{ij}=a_{kl}}{a[i,j]==a[k,j]} when \eqn{i-j=k-l}{i-j=k-l}
-  (modulo \eqn{n}{n}).  The standard values to use give \code{1:n}
-  for the top row.
 
-  In the case of arbitrary dimensional arrays, giving the default value
-  for \code{dir} checks that
-  \code{a[v]==a[v+rep(1,d)]==...=a[v+rep((n-1),d)]} for all
-  \code{v} (that is, following lines parallel to the major diagonal);
-  indices are passed through \code{process()}.
+  A matrix \eqn{a} is \dfn{circulant} if all major diagonals, including
+  broken diagonals, are uniform; ie if
+  \eqn{a_{ij}=a_{kl}}{a[i,j]==a[k,j]} when \eqn{i-j=k-l} (modulo
+  \eqn{n}).  The standard values to use give \code{1:n} for the top row.
+
+  In function \code{is.circulant()}, for arbitrary dimensional arrays,
+  the default value for \code{dir} checks that
+  \code{a[v]==a[v+rep(1,d)]==...==a[v+rep((n-1),d)]} for all \code{v}
+  (that is, following lines parallel to the major diagonal); indices are
+  passed through \code{process()}.
 
   For general \code{dir}, function \code{is.circulant()} checks that
   \code{a[v]==a[v+dir]==a[v+2*dir]==...==a[v+(n-1)*d]} for all
   \code{v}.
 
-  A Toeplitz matrix is one in which \code{a[i,j]=a[i',j']} whenever
-  \code{|i-j|=|i'-j'|}.  See function \code{toeplitz()} of the
+  A \dfn{Toeplitz} matrix is one in which \code{a[i,j]=a[i',j']}
+  whenever \code{|i-j|=|i'-j'|}.  See function \code{toeplitz()} of the
   \code{stats} package for details.
 }
 \references{Arthur T. Benjamin and K. Yasuda.  \emph{Magic

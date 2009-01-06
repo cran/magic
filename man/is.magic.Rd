@@ -1,14 +1,20 @@
 \name{is.magic}
 \alias{is.magic}
 \alias{is.panmagic}
+\alias{is.pandiagonal}
 \alias{is.semimagic}
 \alias{is.semimagic.default}
 \alias{is.associative}
 \alias{is.normal}
+\alias{is.sparse}
 \alias{is.mostperfect}
 \alias{is.2x2.correct}
 \alias{is.bree.correct}
 \alias{is.latin}
+\alias{is.antimagic}
+\alias{is.totally.antimagic}
+\alias{is.sam}
+\alias{is.stam}
 \title{Various tests for the magicness of a square}
 \description{
   Returns \code{TRUE} if the square is magic, semimagic, panmagic, associative,
@@ -18,14 +24,20 @@
 \usage{
 is.magic(m, give.answers = FALSE, FUN=sum, boolean=FALSE) 
 is.panmagic(m, give.answers = FALSE, FUN=sum, boolean=FALSE) 
+is.pandiagonal(m, give.answers = FALSE, FUN=sum, boolean=FALSE) 
 is.semimagic(m, give.answers = FALSE, FUN=sum, boolean=FALSE) 
 is.semimagic.default(m)
 is.associative(m)
 is.normal(m)
+is.sparse(m)
 is.mostperfect(m,give.answers=FALSE)
 is.2x2.correct(m,give.answers=FALSE)
 is.bree.correct(m,give.answers=FALSE)
 is.latin(m,give.answers=FALSE)
+is.antimagic(m, give.answers = FALSE, FUN=sum) 
+is.totally.antimagic(m, give.answers = FALSE, FUN=sum)
+is.sam(m)
+is.stam(m)
 }
 \arguments{
   \item{m}{The square to be tested}
@@ -63,24 +75,39 @@ is.latin(m,give.answers=FALSE)
     \item A \dfn{normal square} is one that contains \eqn{n^2}
     consecutive integers (typically starting at 0 or 1).
 
+    \item A \dfn{sparse} matrix is one whose nonzero entries are
+    consecutive integers, starting at 1.
+    
     \item An \dfn{associative square} is a magic square in which
     \eqn{a_{i,j}+a_{n+1-i,n+1-j}=n^2+1}{a[i,j]+a[n+1-i,n+1-j]=n^2+1}.
     Note that an associative semimagic square is magic; see also
     \code{is.square.palindromic()}.  The definition extends to magic
     hypercubes: a hypercube \code{a} is associative if \code{a+arev(a)}
     is constant.
+    
+    \item A \dfn{latin square} of size \eqn{n\times n}{n-by-n} is one in
+    which each column and each row comprises the integers 1 to n (not
+    necessarily in that order).  Function \code{is.latin()} is a wrapper
+    for \code{is.latinhypercube()} because there is no natural way to
+    present the extra information given when \code{give.answers} is
+    \code{TRUE} in a manner consistent with the other functions
+    documented here.
+    
+    \item An \dfn{antimagic square} is one whose row sums and column
+    sums are consecutive integers; a \dfn{totally antimagic square} is
+    one whose row sums, column sums, and two unbroken diagonals are
+    consecutiveintegers.  Observet that an antimagic square is not
+    necessarily totally antimagic, and vice-versa.
 
-   \item A \dfn{latin square} of size \eqn{n\times n}{n-by-n} is one in
-   which each column and each row comprises the integers 1 to n (not
-   necessarily in that order).  Function \code{is.latin()} is a wrapper
-   for \code{is.latinhypercube()} because there is no natural way to
-   present the extra information given when \code{give.answers} is
-   \code{TRUE} in a manner consistent with the other functions
-   documented here.
-   }
+    \item A square is \dfn{sam} (or \dfn{SAM}) if it is sparse and
+    antimagic; it is  \dfn{stam} (or \dfn{STAM}) if it is sparse and
+    totally antimagic.  See documentation at \code{SAM}.
+   
+  }
 }
 \value{
-  Returns \code{TRUE} if the square is semimagic, etc.
+  Returns \code{TRUE} if the square is semimagic, etc. and \code{FALSE}
+   if not.
  
   If \code{give.answers} is taken as an argument and is \code{TRUE},
   return a list of at least five elements.  The first element of the

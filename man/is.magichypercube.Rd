@@ -59,16 +59,20 @@ is.latinhypercube(a, give.answers=FALSE)
     specifying a function other than \code{sum()}, criteria other than
     the diagonals returning the correct sum may be tested.
 
-    \item A \emph{perfect magic hypercube} (use \code{is.perfect()}) is
+    \item A \dfn{perfect magic hypercube} (use \code{is.perfect()}) is
     a magic hypercube with all nonbroken diagonals summing correctly.
     This is a seriously restrictive requirement for high dimensional
     hypercubes.  As yet, this function does not take a
     \code{give.answers} argument.
-    }
+
+    \item A \dfn{pandiagonal magic hypercube} (or sometimes just a
+    \dfn{perfect hypercube}) is a semimagic hypercube with all
+    diagonals, including broken diagonals, summing correctly.  This is
+    not implemented.
+  }
 
   The terminology in this area is pretty confusing.  
-
-    
+  
   In \code{is.magichypercube()}, if argument \code{give.answers=TRUE}
   then a list is returned.  The first element of this list is Boolean
   with \code{TRUE} if the array is a magic hypercube.  The second
@@ -100,17 +104,19 @@ is.latinhypercube(a, give.answers=FALSE)
   only if \code{identical(f(x),f(rev(x)))} is \code{TRUE} for each long
   diagonal (a condition met, for example, by \code{sum()} but not by the
   identity function or \code{function(x){x[1]}}).
-
 }
 \references{
-  \url{http://members.shaw.ca/hdhcubes/cube_perfect.htm#Cubes}
-  
- Richards 1980. \dQuote{Generalized magic cubes}.
-      \emph{Mathematics Magazine}, volume 53, number 2, (March).
+  \itemize{
+    \item
+    R. K. S. Hankin 2005.  \dQuote{Recreational mathematics with R:
+      introducing the \pkg{magic} package}.  R news, 5(1)
+    \item
+    Richards 1980. \dQuote{Generalized magic cubes}.
+    \emph{Mathematics Magazine}, volume 53, number 2, (March).
+  }
 }
 \author{Robin K. S. Hankin}
 \note{
-
 Note that not all subhypercubes are necessarily magic! (for example,
 consider a 5-dimensional magic hypercube \code{a}.  The square \code{b}
 defined by \code{a[1,1,1,,]} might not be magic: the diagonals of
@@ -127,13 +133,13 @@ incorrect (the colsums must sum correctly because \code{a} is magic).
 Note that the diagonals of this square are two of the \dQuote{extreme
 point-to-point} diagonals of \code{a}.
 
-A \emph{pandiagonal magic hypercube} (or sometimes just a {\em perfect
-hypercube}) has sums equal, and all sums of all diagonals, including
-broken diagonals, are equal.  This is one seriously bad-ass requirement.
-I reckon that is a total of \eqn{\frac{1}{2}\left( 3^d-1\right)\cdot
-n^{d-1}}{(3^d-1)n^(d-1)/2} correct summations.  This is not coded up
-yet; I can't see how to do it in anything like a vectorized manner.
-
+A \dfn{pandiagonal magic hypercube} (or sometimes just a \dfn{perfect
+hypercube}) is semimagic and in addition the sums of all diagonals,
+including broken diagonals, are correct.  This is one seriously bad-ass
+requirement.  I reckon that is a total of \eqn{\frac{1}{2}\left(
+3^d-1\right)\cdot n^{d-1}}{(3^d-1)n^(d-1)/2} correct summations.  This
+is not coded up yet; I can't see how to do it in anything like a
+vectorized manner.
 }
   
 \seealso{\code{\link{is.magic}}, \code{\link{allsubhypercubes}}, \code{\link{hendricks}}}

@@ -19,8 +19,7 @@ Magic squares and hypercubes; arbitrary dimensioned array manipulation
 }
 \author{
 Robin K. S. Hankin
-
-Maintainer: r.hankin@noc.soton.ac.uk
+\email{rksh1@cam.ac.uk}
 }
 \keyword{ package }
 \examples{

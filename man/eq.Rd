@@ -13,7 +13,7 @@
 \alias{\%le\%}
 \title{Comparison of two magic squares}
 \description{
-  Compares two magic squares according to Fr\'{e}nicle's method.
+  Compares two magic squares according to Frenicle's method.
   Mnemonic is the old Fortran \dQuote{.GT.}  (for \dQuote{Greater Than})
   comparison et seq.
 

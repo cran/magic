@@ -11,7 +11,7 @@ transf(a, i)
 \arguments{
   \item{a}{Magic square}
   \item{i}{Integer, considered modulo 8.  Specifying 0-7 gives a
-    different magic square.}
+    different magic square}
 }
 \author{Robin K. S. Hankin}
 \seealso{\code{\link{is.standard}}}

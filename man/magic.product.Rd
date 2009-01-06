@@ -16,7 +16,7 @@ magic.product.fast(a, b)
   \item{mat}{Matrix, of same size as \code{a}, of integers treated as
     modulo 8.  Default value of \code{NULL} equivalent to passing
     \code{a*0}.  Each number from 0-7 corresponds to one of the 8
-    squares which have the same Fr\'{e}nicle's standard form.  Then
+    squares which have the same Frenicle's standard form.  Then
     subsquares of the product square (ie tiles of the same size as
     \code{b}) are rotated and transposed appropriately according to
     their corresponding entry in \code{mat}.  This is a lot easier to

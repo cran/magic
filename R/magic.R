@@ -123,19 +123,20 @@ function(a, swap=TRUE)
     if(is.vector(a)){return(rev(a))}
     d <- dim(a)
     n <- length(d)
+    N <- seq_len(n)
     if(is.logical(swap)){
       if(length(swap)==1){swap <- rep(swap,n)}
     } else {
-      swap <- 1:n %in% swap
+      swap <- N %in% swap
     }
     f <- function(i){
       if(d[i]>0){
-        return(swap[i]*d[i]:1+ (!swap[i])*1:d[i])
+        return(swap[i]*rev(seq_len(d[i])) + (!swap[i])*seq_len(d[i]))
       } else {
         return(0)
       }
     }
-    do.call("[", c(list(a), sapply(1:n, f, simplify=FALSE),drop=FALSE))
+    do.call("[", c(list(a), sapply(N, f, simplify=FALSE),drop=FALSE))
 }
 "arot" <- 
 function (a, rights=1, pair=1:2) 
@@ -197,6 +198,9 @@ function (vec)
    out[] <- vec[out]
    return(out)
 }
+
+latin <- circulant
+
 "diag.off" <-
 function (a, offset = 0, nw.se = TRUE) 
 {
@@ -527,6 +531,7 @@ function (m, give.answers = FALSE, FUN = sum, boolean = FALSE)
         return(answer)
     }
 }
+"is.pandiagonal" <- is.panmagic
 "is.perfect" <-
 function (a, give.answers = FALSE, FUN = sum, boolean = FALSE) 
 {
@@ -1241,5 +1246,251 @@ function (a, i)
                                       KEEP.OUT.ATTRS = FALSE) )
        a[index] <- apply(index, 1, f, ...)
        return(a)
+}
+
+"sam" <- function(m, u, A=NULL, B=A){
+  if(is.null(A)){
+    A <- latin(m)
+  }
+  if(is.null(B)){
+    B <- is.latin(m)
+  }
+  
+  if(u%%2){  # u odd
+    if(u < 3){
+      jj <- NULL
+    } else {
+      jj <- 8 * seq(from=0 , by=1 , to=round((u-3)/2) )
+    }
+    JC <- c(0,   6+jj, 13+jj)
+    JD <- c(1,   7+jj, 12+jj)
+    JS <- c(2,4, 8+jj, 11+jj)
+    JT <- c(3,5, 9+jj, 10+jj)
+  } else { # u even
+    if(u < 4){
+      jj <- NULL
+    } else {
+      jj <- 8 * seq(from=0 , by=1 , to=round((u-4)/2) )
+    }
+    JC <- c(2,3,   10+jj, 17+jj)
+    JD <- c(0,4,   11+jj, 16+jj)
+    JS <- c(1,7,9, 12+jj, 15+jj)
+    JT <- c(5,6,8, 13+jj, 14+jj)
+  }
+  
+  S <- C <- T <- D <- A*0
+  
+  i <- row(A)
+
+  for(r in seq_len(u)){
+    Ar <- A==r
+    Br <- B==r
+    S[Br] <-         i[Br] + m*JS[r]
+    C[Ar] <- (m+1) - i[Ar] + m*JC[r]
+    T[Ar] <-         i[Ar] + m*JT[r]
+    D[Br] <- (m+1) - i[Br] + m*JD[r]
+  }
+  S[B==u+1] <- i[B==u+1] + m*JS[u+1]  # 2
+  T[A==u+1] <- i[A==u+1] + m*JT[u+1]  # 3
+  
+  return(rbind(
+               cbind(C,S),
+               cbind(T,D)
+               )
+         )
+}
+
+"is.antimagic" <- function(m, give.answers=FALSE, FUN=sum){
+  if (is.list(m)) {
+    return(sapply(m, match.fun(sys.call()[[1]])))
+  }
+  jj <- allsums(m, FUN=FUN)
+  answer <- all(diff(sort(c(jj$rowsums , jj$colsums)))==1)
+  if(give.answers){
+    return(c(answer=answer , jj))
+  } else {
+    return(answer)
+  }
+}
+
+"is.totally.antimagic" <- function(m, give.answers=FALSE, FUN=sum){
+  if (is.list(m)) {
+    return(sapply(m, match.fun(sys.call()[[1]])))
+  }
+  jj <- allsums(m, FUN=FUN)
+  answer <-
+    all(diff(sort(c(
+                    jj$rowsums  ,
+                    jj$colsums  ,
+                    jj$majors[1],
+                    jj$minors[1]
+                    )))==1)
+  if(give.answers){
+    return(c(answer=answer , jj))
+  } else {
+    return(answer)
+  }
+}
+
+"is.sparse" <- function(m){
+  if (is.list(m)) {
+    return(sapply(m, match.fun(sys.call()[[1]])))
+  }
+  m <- m[m != 0]
+  minmax(c(1,diff(sort(m)))) &  (min(m)==1)
+}
+  
+"is.sam" <- function(m){
+  if (is.list(m)) {
+    return(sapply(m, match.fun(sys.call()[[1]])))
+  }
+  is.antimagic(m) & is.sparse(m)
+}
+
+"is.stam" <- function(m){
+  if (is.list(m)) {
+    return(sapply(m, match.fun(sys.call()[[1]])))
+  }
+  is.totally.antimagic(m) & is.sparse(m)
+}
+
+"incidence" <- function(a){
+  M <- max(a)
+  d <- dim(a)
+  sd <- seq_along(d)
+  out <- array(0L,dim=c(d,M))
+  f <- function(i){out <- rep(0L,M)
+                   out[i] <- 1L
+                   out
+                 }
+  aperm(apply(a,sd,f),c(sd+1,1))
+}
+
+"is.incidence" <- function(a, include.improper){ 
+  f <- function(x){ all(x==0 | x==1) & sum(x)==1 }
+  out <- is.semimagichypercube(a, FUN=f, boolean=TRUE)
+  if(include.improper){
+    return(out|is.incidence.improper(a))
+  } else {
+    return(out)
+  }
+}
+
+"is.incidence.improper" <- function(a){
+  f <- function(x){
+    (all(x==0 | x==1 | x==(-1)) & sum(x)==1) |
+    (all(x==0 | x==1)           & sum(x)==1)
+  }
+  is.semimagichypercube(a, FUN=f, boolean=TRUE) & (sum(a == -1) == 1)
+}
+ 
+"unincidence" <- function(a){
+  stopifnot(is.incidence(a,include.improper=FALSE))
+  a <- a>0
+  apply(a, seq_len(length(dim(a))-1) , which)
+}
+
+"inc_to_inc" <- function(a){ # takes a proper or improper incidence
+                                 # array (0/1) and returns an
+                                 # incidence array, randomly chosen if
+                                 # a is improper.  If 'a' is proper,
+                                 # returns an improper array; if
+                                 # improper, returns either a proper
+                                 # or improper array.
+
+  storage.mode(a) <- "numeric"
+  randint <- function(r,n=1){ceiling(runif(n)*r)}
+  stopifnot(is.incidence(a, include.improper=TRUE))
+  if(is.incidence(a,include.improper=FALSE)){
+    proper <- TRUE
+  } else {
+    proper <- FALSE
+  }
+  
+  if(proper){ # choose a zero
+    jj <- which(a==0 , arr.ind=TRUE)
+    pivot <- jj[randint(nrow(jj)),,drop=TRUE]
+  } else { # choose the (single) -1
+    pivot <- which(a == -1, arr.ind=TRUE)
+  }
+
+  jj1 <- which(a[        ,pivot[2],pivot[3],drop=TRUE] == 1)
+  jj2 <- which(a[pivot[1],        ,pivot[3],drop=TRUE] == 1)
+  jj3 <- which(a[pivot[1],pivot[2],        ,drop=TRUE] == 1)
+  
+  if(!proper){
+    jj1 <- jj1[randint(2)]
+    jj2 <- jj2[randint(2)]
+    jj3 <- jj3[randint(2)]
+  }
+   
+  kk1 <- c(jj1     , pivot[2], pivot[3])
+  kk2 <- c(pivot[1], jj2     , pivot[3])
+  kk3 <- c(pivot[1], pivot[2], jj3     )    # a[kk[123]] == TRUE
+  
+  ll1 <- c(pivot[1],     jj2,     jj3)
+  ll2 <- c(jj1     ,pivot[2],     jj3)
+  ll3 <- c(jj1     ,     jj2,pivot[3])
+  
+  mm1 <- c(jj1,jj2,jj3)
+  
+  increment <- rbind(pivot, ll1,ll2,ll3)
+  decrement <- rbind(kk1,kk2,kk3,mm1)
+
+  a[increment] <- a[increment] + 1L
+  a[decrement] <- a[decrement] - 1L
+  return(a)
+}
+
+"another_latin" <- function(a){ #given a latin square, returns a _different_ one
+
+  i <- incidence(a)
+  anew <- unincidence(i)   #inefficient but clear; anew==a
+  while(all(a == anew)){  # iterate until a different one is found
+    i <- inc_to_inc(i)
+    if(is.incidence(i,FALSE)){
+      anew <- unincidence(i)
+    }
+  }
+  anew
+}
+
+"another_incidence" <- function(i){ # given a _proper_ incidence
+                                    # array, returns a different
+                                    # _proper_ incidence array
+
+
+  out <- i
+  while(all(out==i) | !is.incidence(out,FALSE)){
+    out <- inc_to_inc(out)
+  }
+  return(out)
+}
+
+"rlatin" <- function(n,size=NULL,start=NULL,burnin=NULL){
+
+  if(is.null(size) & is.null(start)){
+    size <- n
+    n <- 1
+  }
+  
+  if(is.null(start)){
+    start <- latin(size)
+  } else {
+    stopifnot(is.latin(start))
+  }
+
+  if(is.null(burnin)){
+    burnin <- prod(dim(start))
+  }
+  
+  out <- array(0L,c(dim(start),n))
+  inc <- incidence(start)
+  for(i in seq_len(burnin)){inc <- another_incidence(inc)}
+  for(i in seq_len(n)){
+    out[,,i] <- unincidence(inc)
+    inc <- another_incidence(inc)
+  }
+  return(drop(out))
 }
 

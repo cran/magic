@@ -5,7 +5,7 @@
 \title{Standard form for magic squares}
 \description{
   Transforms a magic square or magic hypercube into
-  Fr\'{e}nicle's standard form
+  Frenicle's standard form
 }
 \usage{
 as.standard(a)
@@ -14,13 +14,13 @@ is.standard(a)
 \arguments{
   \item{a}{Magic square or hypercube (array) to be tested or transformed}
 }
-
 \details{
 For a square, \code{as.standard()} transforms a magic square into
-Fr\'{e}nicle's standard form.  The four numbers at each of the four
-corners are determined.  First, the square is rotated so the smallest of
-the four is at the upper left.  Then, element \code{[1,2]} is compared
-with element\code{[2,1]} and, if it is larger, the transpose is taken.
+Frenicle's standard form.  The four numbers at each of
+the four corners are determined.  First, the square is rotated so the
+smallest of the four is at the upper left.  Then, element \code{[1,2]}
+is compared with element\code{[2,1]} and, if it is larger, the transpose
+is taken.
 
 Thus all eight rotated and transposed versions of a magic square have
 the same standard form.
@@ -49,9 +49,12 @@ hypercube is in standard form.  \code{is.standard()} and
 \code{as.standard()} check for neither magicness nor normality (use
 \code{\link{is.magic}} and \code{\link{is.normal}} for this).
 }
-
+\note{
+  There does not appear to be a way to make the third letter of
+  \dQuote{Frenicle} have an acute accent, as it should do.
+  }
 \author{Robin K. S. Hankin}
-\seealso{\code{\link{magic}},\ \code{\link{eq}}}
+\seealso{\code{\link{magic}}, \code{\link{eq}}}
 \examples{
 is.standard(magic.2np1(4))
 as.standard(magic.4n(3))

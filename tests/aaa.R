@@ -144,8 +144,14 @@ stopifnot(!is.circulant(a))
 a <- array(1:32,rep(2,5))
 stopifnot(identical(as.vector(arev(a)),rev(a)))
 
+
+jj <- as.vector(magic(19))[seq_len(360)]
+stopifnot(identical(arev(array(jj,3:6)) , array(rev(jj),3:6)))
+
+
 b <-  c(TRUE,FALSE,TRUE,FALSE,TRUE)
 stopifnot(identical(a,arev(arev(a,b),b)))
+
 
 stopifnot(identical(a[,2:1,,,],arev(a,2)))
 stopifnot(identical(arev(a,c(2:4)),a[,2:1,2:1,2:1,]))
@@ -220,3 +226,14 @@ f1 <- function(x){as.integer(sum(x))}
 f2 <- function(x){
 a <- array(0:0,c(2,3,4,5))
 stopifnot(identical(do.index(a,f1),arow(a,1)+arow(a,2)+arow(a,3)+arow(a,4)))
+
+
+
+
+# Some tests of the incidence functionality:
+stopifnot(is.latin(a))
+stopifnot(is.latin(unincidence(aperm(incidence(a),c(3,1,2)))))
+stopifnot(is.latin(unincidence(aperm(incidence(a),c(3,2,1)))))
+stopifnot(is.latin(unincidence(aperm(incidence(a),c(1,3,2)))))
+# From Jacobson 1996
+
