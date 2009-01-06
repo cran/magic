@@ -190,8 +190,6 @@ a <- array(1,c(2,2,2,2,3,2,2))
 stopifnot(minmax(subsums(a,2)))
 
 # Now sundry tests of apltake(), apldrop(), apad(), arev() etc:
-
-
 f1 <-
   function(a){
     zero <- as.integer(0)
@@ -220,20 +218,36 @@ stopifnot(
              
     
 
-#some tests of do.index():
-
+# Some tests of do.index():
 f1 <- function(x){as.integer(sum(x))}
-f2 <- function(x){
-a <- array(0:0,c(2,3,4,5))
-stopifnot(identical(do.index(a,f1),arow(a,1)+arow(a,2)+arow(a,3)+arow(a,4)))
+f2 <- function(a){
+  stopifnot(identical(do.index(a,f1),arow(a,1)+arow(a,2)+arow(a,3)+arow(a,4)))
+}
 
+f2(array(0L,c(2,3,4,5)))
+f2(array(0L,c(3,5,4,2)))
 
 
 
 # Some tests of the incidence functionality:
-stopifnot(is.latin(a))
-stopifnot(is.latin(unincidence(aperm(incidence(a),c(3,1,2)))))
-stopifnot(is.latin(unincidence(aperm(incidence(a),c(3,2,1)))))
-stopifnot(is.latin(unincidence(aperm(incidence(a),c(1,3,2)))))
-# From Jacobson 1996
 
+n <- 7
+f <- function(a){
+  is.latin(a)                                           &
+  is.latin(unincidence(aperm(incidence(a),c(3,1,2))))   &
+  is.latin(unincidence(aperm(incidence(a),c(3,2,1))))   &
+  is.latin(unincidence(aperm(incidence(a),c(1,3,2))))
+}
+
+stopifnot(sapply(sapply(2:n , latin) , f))
+
+
+
+
+
+#Some tests of the antimagic functions:
+jj <- matrix(FALSE,n,n)
+jj[lower.tri(jj)] <- TRUE
+
+f <- function(x){is.sam(sam(x[1],x[2]))}
+stopifnot(all(apply(which(jj , arr.ind=TRUE),1,f)))
