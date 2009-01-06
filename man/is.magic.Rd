@@ -22,10 +22,10 @@
   additional information about the sums.
 }
 \usage{
-is.magic(m, give.answers = FALSE, FUN=sum, boolean=FALSE) 
-is.panmagic(m, give.answers = FALSE, FUN=sum, boolean=FALSE) 
-is.pandiagonal(m, give.answers = FALSE, FUN=sum, boolean=FALSE) 
-is.semimagic(m, give.answers = FALSE, FUN=sum, boolean=FALSE) 
+is.magic(m, give.answers = FALSE, func=sum, boolean=FALSE) 
+is.panmagic(m, give.answers = FALSE, func=sum, boolean=FALSE) 
+is.pandiagonal(m, give.answers = FALSE, func=sum, boolean=FALSE) 
+is.semimagic(m, give.answers = FALSE, func=sum, boolean=FALSE) 
 is.semimagic.default(m)
 is.associative(m)
 is.normal(m)
@@ -34,8 +34,8 @@ is.mostperfect(m,give.answers=FALSE)
 is.2x2.correct(m,give.answers=FALSE)
 is.bree.correct(m,give.answers=FALSE)
 is.latin(m,give.answers=FALSE)
-is.antimagic(m, give.answers = FALSE, FUN=sum) 
-is.totally.antimagic(m, give.answers = FALSE, FUN=sum)
+is.antimagic(m, give.answers = FALSE, func=sum) 
+is.totally.antimagic(m, give.answers = FALSE, func=sum)
 is.sam(m)
 is.stam(m)
 }
@@ -43,12 +43,12 @@ is.stam(m)
   \item{m}{The square to be tested}
   \item{give.answers}{Boolean, with \code{TRUE} meaning return additional
     information about the sums (see details)}
-  \item{FUN}{A function that is evaluated for each row, column, and
+  \item{func}{A function that is evaluated for each row, column, and
     unbroken diagonal}
   \item{boolean}{Boolean, with \code{TRUE} meaning that the square is
-    deemed magic, semimagic, etc, if all applications of \code{FUN}
+    deemed magic, semimagic, etc, if all applications of \code{func}
     evaluate to \code{TRUE}.  If \code{boolean} is \code{FALSE}, square
-    \code{m} is magic etc if all applications of \code{FUN} are
+    \code{m} is magic etc if all applications of \code{func} are
     identical}
 }
 \details{
@@ -128,12 +128,12 @@ is.stam(m)
   method than \code{is.semimagic()}.
 }
 \note{
-  Functions that take a \code{FUN} argument apply that function to each
-  row, column, and diagonal as necessary.  If \code{FUN} takes its
+  Functions that take a \code{func} argument apply that function to each
+  row, column, and diagonal as necessary.  If \code{func} takes its
   default value of \code{sum()}, the sum will be returned; if
   \code{prod()}, the product will be returned, and so on.  There are
   many choices for this argument that produce interesting tests;
-  consider \code{FUN=max}, for example.  With this, a \dQuote{magic}
+  consider \code{func=max}, for example.  With this, a \dQuote{magic}
   square is one whose row, sum and (leading) diagonals have identical
   maxima.  Thus \code{diag(5)} is magic with respect to \code{max()},
   but \code{diag(6)} isn't.
@@ -148,7 +148,7 @@ is.stam(m)
 \examples{
 is.magic(magic(4))
 
-is.magic(diag(9),FUN=max)  #should be TRUE
+is.magic(diag(9),func=max)  #should be TRUE
 
 stopifnot(is.magic(magic(3:8)))
 

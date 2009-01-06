@@ -8,13 +8,13 @@
 magic.2np1(m, ord.vec = c(-1, 1), break.vec = c(1, 0), start.point=NULL)
 }
 \arguments{
-  \item{m}{creates a magic square of order \eqn{n=2m+1}{n=2m+1}}
+  \item{m}{creates a magic square of order \eqn{n=2m+1}}
   \item{ord.vec}{ordinary vector.  Default value of \code{c(-1,1) }
     corresponds to the usual northeast direction}
   \item{break.vec}{break vector.  Default of \code{c(1,0)} corresponds to the
     usual south direction}
   \item{start.point}{Starting position for the method (ie coordinates of
-    unity).  Default value of NULL corresponds to row 1, column \code{m}.}
+    unity).  Default value of NULL corresponds to row 1, column \code{m}}
 }
 \references{Written up in loads of places.  The method (at least with
   the default ordinary and break vectors) seems to have been known since

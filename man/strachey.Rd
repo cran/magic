@@ -16,15 +16,16 @@ strachey(m, square=magic.2np1(m))
 }
 \details{
   Strachey's method essentially places four identical magic squares
-  \eqn{2m+1} together to form one of \eqn{n=4m+2}.  Then
-  \eqn{0,n^2/4/n^2/2,3n^2/4}{0,n^2/4/n^2/2,3n^2/4} is added to each
+  of order \eqn{2m+1} together to form one of \eqn{n=4m+2}.  Then
+  \eqn{0,n^2/4,n^2/2,3n^2/4} is added to each
   square; and finally, certain squares are swapped from the top
   subsquare to the bottom subsquare.
 
   See the final example for an illustration of how this works,
-  using a zero matrix as the submatrix.    Observe how some 75s are
+  using a zero matrix as the submatrix.  Observe how some 75s are
   swapped with some 0s, and some 50s with some 25s.  
 }
+  
 \author{Robin K. S. Hankin}
 \seealso{\code{\link{magic.4np2}},\code{\link{lozenge}}}
 \examples{

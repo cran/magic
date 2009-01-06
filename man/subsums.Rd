@@ -5,7 +5,7 @@
 Returns the sums of submatrices of an array; multidimensional moving
 window averaging}
   \usage{
-subsums(a,p,FUN="sum",wrap=TRUE, pad=0)
+subsums(a,p,func="sum",wrap=TRUE, pad=0)
 }
 \arguments{
   \item{a}{Array to be analysed}
@@ -21,7 +21,7 @@ subsums(a,p,FUN="sum",wrap=TRUE, pad=0)
   examples.  
 
   }
-  \item{FUN}{Function to be applied over the elements of the moving
+  \item{func}{Function to be applied over the elements of the moving
     window.  Default value of \code{sum} gives the sum as used in
     \code{is.2x2.correct()};  other choices might be \code{mean},
     \code{prod}, or \code{max}.  
@@ -39,7 +39,7 @@ subsums(a,p,FUN="sum",wrap=TRUE, pad=0)
     dimension \code{dim(a)+p-1}.}
   \item{pad}{If \code{wrap} is \code{TRUE}, \code{pad} is
     the value used   to pad the array with.  Use a \dQuote{neutral} value here;
-    for example, if \code{FUN=sum}, then use 0; if \code{max}, use
+    for example, if \code{func=sum}, then use 0; if \code{max}, use
     \eqn{-\infty}{-Inf}.}
 }
 \details{
@@ -66,7 +66,7 @@ subsums(a,p,FUN="sum",wrap=TRUE, pad=0)
 
   #Example of nondefault function:
   x <- matrix(1:42,6,7)
-  subsums(x,2,FUN="max",pad=Inf,wrap=TRUE)  
-  subsums(x,2,FUN="max",pad=Inf,wrap=FALSE)
+  subsums(x,2,func="max",pad=Inf,wrap=TRUE)  
+  subsums(x,2,func="max",pad=Inf,wrap=FALSE)
 }
 \keyword{array}

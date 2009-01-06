@@ -9,21 +9,21 @@
 Returns \code{TRUE} if a hypercube is semimagic, magic, perfect
 }
 \usage{
-is.semimagichypercube(a, give.answers=FALSE, FUN=sum, boolean=FALSE)
-is.diagonally.correct(a, give.answers = FALSE, FUN=sum, boolean=FALSE) 
-is.magichypercube(a, give.answers = FALSE, FUN=sum, boolean=FALSE) 
-is.perfect(a, give.answers = FALSE, FUN=sum, boolean=FALSE)
+is.semimagichypercube(a, give.answers=FALSE, func=sum, boolean=FALSE)
+is.diagonally.correct(a, give.answers = FALSE, func=sum, boolean=FALSE) 
+is.magichypercube(a, give.answers = FALSE, func=sum, boolean=FALSE) 
+is.perfect(a, give.answers = FALSE, func=sum, boolean=FALSE)
 is.latinhypercube(a, give.answers=FALSE)
 }
 \arguments{
   \item{a}{The hypercube (array) to be tested}
   \item{give.answers}{Boolean, with \code{TRUE} meaning to also return
     the sums}
-  \item{FUN}{Function to be applied across each dimension}
+  \item{func}{Function to be applied across each dimension}
   \item{boolean}{Boolean, with \code{TRUE} meaning that the hypercube is
-    deemed magic, semimagic, etc, if all applications of \code{FUN}
+    deemed magic, semimagic, etc, if all applications of \code{func}
     evaluate to \code{TRUE}.  If \code{boolean} is \code{FALSE}, the
-    hypercube is magic etc if all applications of \code{FUN} are identical}
+    hypercube is magic etc if all applications of \code{func} are identical}
 }
 \details{
   (Although apparently non-standard, here a hypercube is defined to have
@@ -43,9 +43,9 @@ is.latinhypercube(a, give.answers=FALSE)
     summed elements onto the surface hypercube.  The last dimension
     indicates the dimension along which the sum was taken over.
 
-    Optional argument \code{FUN}, defaulting to \code{sum()}, indicates
+    Optional argument \code{func}, defaulting to \code{sum()}, indicates
     the function to be taken over each of the \code{d} dimensions.
-    Currently requires \code{FUN} to return a scalar.
+    Currently requires \code{func} to return a scalar.
   
     \item A \dfn{Latin hypercube} is one in which each line of elements
     whose coordinates differ in only one dimension comprises the numbers
@@ -83,19 +83,19 @@ is.latinhypercube(a, give.answers=FALSE)
   In \code{is.diagonally.correct()}, if argument
   \code{give.answers=TRUE}, the function also returns an array of
   dimension \code{c(q,rep(2,d))} (that is, \eqn{q\times 2^d}{q*2^d}
-  elements), where \eqn{q}{q} is the length of \code{FUN()} applied to a
+  elements), where \eqn{q}{q} is the length of \code{func()} applied to a
   long diagonal of \code{a} (if \eqn{q=1}{q=1}, the first dimension is
   dropped).  If \eqn{q=1}, then in dimension \code{d} having index 1
-  means \code{FUN()} is applied to elements of \code{a} with the
+  means \code{func()} is applied to elements of \code{a} with the
   \eqn{d^{\rm th}}{d-th} dimension running over \code{1:n}; index 2
   means to run over \code{n:1}.  If \eqn{q>1}, the index of the first
-  dimension gives the index of \code{FUN()}, and subsequent dimensions
+  dimension gives the index of \code{func()}, and subsequent dimensions
   have indices of 1 or 2 as above and are interpreted in the same way.
 
   An example of a function for which these two are not identical is
   given below.
 
-  If \code{FUN=f} where \code{f} is a function returning a vector of
+  If \code{func=f} where \code{f} is a function returning a vector of
   length \code{i}, \code{is.diagonally.correct()} returns an array
   \code{out} of dimension \code{c(i,rep(2,d))}, with
   \code{out[,i_1,i_2,...,i_d]} being \code{f(x)} where \code{x} is the
@@ -156,7 +156,7 @@ is.semimagichypercube(a,g=TRUE)$rook.sums
 
 #argument boolean can be confusing:
 zero <- array(0,rep(3,4))
-is.semimagichypercube(a,FUN=is.ok,boolean=FALSE)  # TRUE, because all
+is.semimagichypercube(a,func=is.ok,boolean=FALSE)  # TRUE, because all
                                                   # applications of is.ok()
                                                   # return the same value!
 
@@ -165,8 +165,8 @@ a2 <- magichypercube.4n(m=1,d=4)
 is.diagonally.correct(a2)
 is.diagonally.correct(a2,g=TRUE)$diag.sums
 
-## To extract corner elements (note FUN(1:n) != FUN(n:1)):
-is.diagonally.correct(a2,FUN=function(x){x[1]},g=TRUE)$diag.sums 
+## To extract corner elements (note func(1:n) != func(n:1)):
+is.diagonally.correct(a2,func=function(x){x[1]},g=TRUE)$diag.sums 
 
 
 #Now for a subhypercube of a magic hypercube that is not semimagic:

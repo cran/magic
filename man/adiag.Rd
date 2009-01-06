@@ -13,11 +13,12 @@ adiag(... , pad=as.integer(0), do.dimnames=TRUE)
     of arrays}
   \item{do.dimnames}{Boolean, with default \code{TRUE} meaning to return
     dimnames if possible.  Set to \code{FALSE} if performance is an
-    issue.}
+    issue}
 }
 \details{
 Binds any number of arrays together, corner-to-corner.  Because the
-function is associative, this page discusses the two array case.
+function is associative provided \code{pad} is of length 1, this page
+discusses the two array case.
 
 If \code{x=adiag(a,b)} and \code{dim(a)=c(a_1,...,a_d)},
 \code{dim(b)=c(b_1,...,b_d)}; then \code{all(dim(x)==dim(a)+dim(b))} and

@@ -2,9 +2,9 @@ library(magic)
 n <- 10
 
 # first test magic() for magicness, standardness, and normality for magic(3)..magic(n):
-stopifnot(is.magic(magic(3:n)))
+stopifnot(is.magic   (magic(3:n)))
 stopifnot(is.standard(magic(3:n)))
-stopifnot(is.normal(magic(3:n)))
+stopifnot(is.normal  (magic(3:n)))
 
 # now test some of the specific algorithms:
 stopifnot(is.magic(strachey(1:n)))
@@ -20,10 +20,9 @@ stopifnot(sapply(1:n,function(i){is.circulant(magic.2np1(i)%%(2*i+1),c(2,-1))}))
 
 # Now test that is.diagonally.correct() in fact extracts the correct elements,
 # using a function that returns just the first element:
-test.corners <- function(i)
-{
+test.corners <- function(i){
   a <- magic(i)
-  identical(a[c(1,i),c(1,i)],is.diagonally.correct(a,FUN=function(x){x[1]},g=TRUE)$diag.sums)
+  identical(a[c(1,i),c(1,i)],is.diagonally.correct(a,func=function(x){x[1]},g=TRUE)$diag.sums)
 }
 
 stopifnot(all(sapply(3:n,test.corners)))
@@ -31,7 +30,7 @@ stopifnot(all(sapply(3:n,test.corners)))
 
 # Now check that, in a 3x3x3 magic cube, the second element of each diagonal is the same:
 f <- function(x){x[2]}
-stopifnot(is.diagonally.correct(magiccube.2np1(1),FUN=f,boolean=FALSE,give=FALSE))
+stopifnot(is.diagonally.correct(magiccube.2np1(1),func=f,boolean=FALSE,give=FALSE))
 
 
 # Now check that the first eigenvalue of a magic square is indeed
@@ -130,6 +129,22 @@ jj1 <- subsums(adiag(a,0,a),2,wrap=F)
 x <- array(1,rep(2,n))
 jj2 <- adiag(x,x)
 stopifnot(identical(jj1,jj2))
+
+
+
+# Now test adiag() for associativity:
+
+jj1 <- array(seq_len(2^n),rep(2,n))
+jj2 <- array(seq_len(3^n),rep(3,n))
+jj3 <- array(seq_len(4^n),rep(4,n))
+
+f <- function(x,y,z){stopifnot(identical(adiag(adiag(x,y),z),adiag(x,adiag(y,z))))} 
+f(jj1,jj2,jj3)
+f(jj2,jj3,jj1)
+f(jj1,jj1,jj1)
+f(jj3,jj3,jj3)
+
+
 
 # Now some tests for is.circulant():
 a <- array(0,rep(2,10))
@@ -246,8 +261,36 @@ stopifnot(sapply(sapply(2:n , latin) , f))
 
 
 #Some tests of the antimagic functions:
-jj <- matrix(FALSE,n,n)
-jj[lower.tri(jj)] <- TRUE
 
 f <- function(x){is.sam(sam(x[1],x[2]))}
-stopifnot(all(apply(which(jj , arr.ind=TRUE),1,f)))
+jj <- as.matrix(which(lower.tri(matrix(0,n,n)),arr.ind=TRUE))
+
+stopifnot(all(apply(jj,1,f)))
+
+
+
+#Some tests of fnsd():
+
+a <- array(1:24,c(1,1,1,1,2,1,3,1,1,4))
+
+stopifnot(length(fnsd(a,0))==0)
+stopifnot(fnsd(a)==5)
+stopifnot(all(fnsd(a,2) == c(5,7)))
+
+
+#Some tests of recurse():
+
+
+
+f <- function(p,i){
+ stopifnot(all(recurse(start=recurse(p,i),p,-i) == seq_along(p)))
+}
+
+
+f(magic(10),0)
+f(magic(11),1)
+f(magic(12),2)
+f(magic(13),3)
+f(magic(14),4)
+
+

@@ -74,19 +74,25 @@ function (a)
     return(out)
 }
 "allsums" <-
-function (m, FUN = sum) 
+function (m, func = NULL) 
 {
     n <- nrow(m)
-    rowsums <- apply(m, 1, FUN)
-    colsums <- apply(m, 2, FUN)
+    if(is.null(func)){
+      rowsums <- rowSums(m)
+      colsums <- colSums(m)
+      func <- sum
+    } else {
+      rowsums <- apply(m, 1, FUN=func)
+      colsums <- apply(m, 2, FUN=func)
+    }
     f1 <- function(i) {
-        FUN(diag.off(m, i, nw.se = TRUE))
+        func(diag.off(m, i, nw.se = TRUE))
     }
     f2 <- function(i) {
-        FUN(diag.off(m, i, nw.se = FALSE))
+        func(diag.off(m, i, nw.se = FALSE))
     }
-    majors <- sapply(0:(n - 1), f1)
-    minors <- sapply(0:(n - 1), f2)
+    majors <- sapply(0:(n - 1), FUN=f1)
+    minors <- sapply(0:(n - 1), FUN=f2)
     return(list(rowsums = rowsums, colsums = colsums, majors = majors, 
         minors = minors))
 }
@@ -169,7 +175,7 @@ function (a, v=rep(1,length(dim(a))))
     f <- function(i) {
         shift(seq_len(dim(a)[i]), v[i])
     }
-    do.call("[", c(list(a), sapply(seq_len(length(dim(a))), f, simplify = FALSE)))
+    do.call("[", c(list(a), sapply(seq_along(dim(a)), f, simplify = FALSE)))
 }
 "as.standard" <-
 function (a) 
@@ -278,10 +284,10 @@ function (n = NULL, a = NULL, b = NULL)
     }
     perm <- c(n - 1, n, 1:(n - 2))
     f <- function(i) {
-        recurse(start = a, perm = perm, i)
+        recurse(perm=perm, i=i, start = a)
     }
     g <- function(i) {
-        recurse(start = b, perm = perm, i)
+        recurse(perm = perm, i=i, start = b)
     }
     jj <- 0:(n - 1)
     aa <- t(sapply(jj, f))
@@ -400,7 +406,7 @@ function(m,dir=rep(1,length(dim(m))))
   return(all(m == ashift(m,dir)))
 }
 "is.diagonally.correct" <-
-function (a, give.answers = FALSE, FUN = sum, boolean = FALSE) 
+function (a, give.answers = FALSE, func = sum, boolean = FALSE) 
 {
     if (!minmax(dim(a))) {
         stop("only cubes of equal dimensions allowed")
@@ -412,7 +418,7 @@ function (a, give.answers = FALSE, FUN = sum, boolean = FALSE)
         (dir > 0) * (1:n) + (dir < 0) * (n:1)
     }
     g <- function(jj) {
-        FUN(a[sapply(jj, f)])
+        func(a[sapply(jj, f)])
     }
     ans <- expand.grid(rep(list(b),d))
     diag.sums <- apply(ans, 1, g)
@@ -441,7 +447,7 @@ function (a, give.answers = FALSE)
     f <- function(x) {
         minmax(c(1, diff(sort(x))))
     }
-    is.consecutive <- is.semimagichypercube(a, FUN = f, give.answers = TRUE)$rook.sums
+    is.consecutive <- is.semimagichypercube(a, func = f, give.answers = TRUE)$rook.sums
     answer <- all(is.consecutive)
     if (give.answers) {
         return(list(answer = answer, is.consecutive))
@@ -451,31 +457,42 @@ function (a, give.answers = FALSE)
     }
 }
 "is.magic" <-
-function (m, give.answers = FALSE, FUN = sum,  boolean = FALSE)
+function (m, give.answers = FALSE, func = sum,  boolean = FALSE)
 {
-    if(is.list(m)){return(unlist(lapply(m,match.fun(sys.call()[[1]]))))}
-    sums <- allsums(m, FUN = FUN)
-    jj <- c(sums$rowsums, sums$colsums, sums$majors[1], sums$minors[1])
-    if (boolean) {
-        answer <- all(jj)
+  if(is.list(m)){
+    out <- lapply(m,match.fun(sys.call()[[1]]),
+                  give.answers = give.answers,
+                  func         = func,
+                  boolean      = boolean
+                  )
+    if(give.answers){
+      return(out)
+    } else {
+      return(unlist(out))
     }
-    else {
-        answer <- minmax(jj)
-    }
-    if (give.answers) {
-        return(c(answer = answer, sums))
-    }
-    else {
-        return(answer)
-    }
+  }
+  sums <- allsums(m, func = func)
+  jj <- c(sums$rowsums, sums$colsums, sums$majors[1], sums$minors[1])
+  if (boolean) {
+    answer <- all(jj)
+  }
+  else {
+    answer <- minmax(jj)
+  }
+  if (give.answers) {
+    return(c(answer = answer, sums))
+  }
+  else {
+    return(answer)
+  }
 }
 "is.magichypercube" <-
-function (a, give.answers = FALSE, FUN = sum, boolean = FALSE) 
+function (a, give.answers = FALSE, func = sum, boolean = FALSE) 
 {
     diag.sums <- is.diagonally.correct(a, give.answers = TRUE, 
-        FUN = FUN, boolean = boolean)$diag.sums
+        func = func, boolean = boolean)$diag.sums
     jj.semi <- is.semimagichypercube(a, give.answers = TRUE, 
-        FUN = FUN, boolean = boolean)
+        func = func, boolean = boolean)
     answer <- minmax(diag.sums) & jj.semi$answer
     if (give.answers) {
         return(list(answer = answer, rook.sums = jj.semi$rook.sums, 
@@ -514,9 +531,9 @@ function (vec, n = length(vec), d = 2)
     return(sum(vec) == magic.constant(n, d = d))
 }
 "is.panmagic" <-
-function (m, give.answers = FALSE, FUN = sum, boolean = FALSE) 
+function (m, give.answers = FALSE, func = sum, boolean = FALSE) 
 {
-    sums <- allsums(m, FUN = FUN)
+    sums <- allsums(m, func = func)
     jj <- c(sums$rowsums, sums$colsums, sums$majors, sums$minors)
     if (boolean) {
         answer <- all(jj)
@@ -533,32 +550,32 @@ function (m, give.answers = FALSE, FUN = sum, boolean = FALSE)
 }
 "is.pandiagonal" <- is.panmagic
 "is.perfect" <-
-function (a, give.answers = FALSE, FUN = sum, boolean = FALSE) 
+function (a, give.answers = FALSE, func = sum, boolean = FALSE) 
 {
     d <- length(dim(a))
-    putative.magic.constant <- FUN(do.call("[", c(list(a), alist(a = )$a, 
+    putative.magic.constant <- func(do.call("[", c(list(a), alist(a = )$a, 
         rep(1, d - 1))))
     jj.is.ok <- function(jj, jj.give) {
         if (length(dim(jj)) == 1) {
             if (boolean) {
-                return(FUN(jj))
+                return(func(jj))
             }
             else {
                 if (jj.give) {
-                  return(FUN(jj))
+                  return(func(jj))
                 }
                 else {
-                  return(FUN(jj) == putative.magic.constant)
+                  return(func(jj) == putative.magic.constant)
                 }
             }
         }
         else {
-            return(is.semimagichypercube(jj, FUN = FUN, boolean = boolean, 
+            return(is.semimagichypercube(jj, func = func, boolean = boolean, 
                 give.answers = jj.give))
         }
     }
     semi.stuff <- is.semimagichypercube(a, give.answers = TRUE, 
-        FUN = FUN, boolean = boolean)
+        func = func, boolean = boolean)
     diag.stuff <- unlist(lapply(allsubhypercubes(a), jj.is.ok, 
         jj.give = FALSE))
     answer <- semi.stuff$answer & all(diag.stuff)
@@ -578,9 +595,9 @@ function (m)
     all(jj==t(jj))
 }
 "is.semimagic" <-
-function (m, give.answers = FALSE, FUN = sum, boolean = FALSE) 
+function (m, give.answers = FALSE, func = sum, boolean = FALSE) 
 {
-    sums <- allsums(m, FUN = FUN)
+    sums <- allsums(m, func = func)
     jj <- c(sums$rowsums, sums$colsums)
     if (boolean) {
         answer <- all(jj)
@@ -602,11 +619,11 @@ function(m)
 }
   
 "is.semimagichypercube" <-
-function (a, give.answers = FALSE, FUN = sum, boolean = FALSE) 
+function (a, give.answers = FALSE, func = sum, boolean = FALSE) 
 {
     d <- length(dim(a))
     f <- function(i) {
-        apply(a, (1:d)[-i], FUN)
+        apply(a, (1:d)[-i], FUN=func)
     }
     jj <- sapply(1:d, f)
     if (minmax(dim(a))) {
@@ -730,7 +747,11 @@ function (n)
 function (m, ord.vec = c(-1, 1), break.vec = c(1, 0), start.point = NULL) 
 {
      if(length(m)>1){
-       return(sapply(m,match.fun(sys.call()[[1]])))
+       return(sapply(m,match.fun(sys.call()[[1]]),
+                     ord.vec = ord.vec,
+                     break.vec = break.vec,
+                     start.point = start.point
+                     ))
      }
      n <- 2 * m + 1
     if (is.null(start.point)) {
@@ -1054,25 +1075,25 @@ function (x, n)
     x[x == 0] <- as.integer(n)
     return(x)
 }
-"recurse" <-
-function (start = 1:n, perm, i) 
-{
+
+"recurse" <- function (perm,i, start=seq_along(perm)) {
+  n <- length(perm)
+  i <- as.integer(i)
+  if (i < 0) {
     invert <- function(perm) {
-        perm[perm] <- 1:length(perm)
-        return(perm)
+      perm[perm] <- 1:length(perm)
+      return(perm)
     }
-    n <- length(perm)
-    i <- as.integer(i)
-    if (i < 0) {
-        return(Recall(start = start, invert(perm), -i))
-    }
-    perm.final <- 1:n
-    while (i != 0) {
-        perm.final <- perm[perm.final]
-        i <- i - 1
-    }
-    return(start[perm.final])
+    return(Recall(start = start, invert(perm), -i))
+  }
+  perm.final <- 1:n
+  while (i != 0) {
+    perm.final <- perm[perm.final]
+    i <- i - 1
+  }
+  return(start[perm.final])
 }
+
 "shift" <-
 function (x, i=1) 
 {
@@ -1088,8 +1109,14 @@ function (x, i=1)
 function (m, square = magic.2np1(m)) 
 {
     if(length(m)>1){
-      return(sapply(m,match.fun(sys.call()[[1]])))
+      stopifnot(length(m) == length(square))
+      funcname <- match.fun(sys.call()[[1]])
+      f <- function(i){
+        do.call(funcname, list(m=m[i],square=square[[i]]))
+      }
+      return(lapply(seq_along(m),f))
     }
+    
     m <- round(m)
     n <- 4 * m + 2
     r <- 2 * m + 1
@@ -1108,12 +1135,12 @@ function (m, square = magic.2np1(m))
     return(force.integer(out))
 }
 "subsums" <-
-function (a, p, FUN = "sum", wrap = TRUE, pad = 0) 
+function (a, p, func = "sum", wrap = TRUE, pad = 0) 
 {   
     if(length(p)==1){p <- 0*dim(a)+p}
     if (wrap == FALSE) {
         jj <- adiag(array(pad, p - 1), a,pad=pad)
-        return(Recall(jj, p, FUN = FUN, pad = pad, 
+        return(Recall(jj, p, func = func, pad = pad, 
             wrap = TRUE))
     }
 
@@ -1129,11 +1156,11 @@ function (a, p, FUN = "sum", wrap = TRUE, pad = 0)
         ashift(a, v)
     })
     dim(out) <- c(dim(a), nrow(sub.coords))
-    if (nchar(FUN) == 0) {
+    if (nchar(func) == 0) {
         return(out)
     }
     else {
-        return(apply(out, 1:length(dim(a)), FUN))
+        return(apply(out, 1:length(dim(a)), FUN=func))
     }
     return(out)
 }
@@ -1208,7 +1235,7 @@ function (a, i)
 }
 
 "fnsd" <- function(a,n=1){
-    return(which(dim(a)>1)[1:n])
+    return(which(dim(a)>1)[seq_len(n)])
   }
 
 "apad" <- function(a, l, e=NULL, method="ext", post=TRUE){
@@ -1293,18 +1320,21 @@ function (a, i)
   S[B==u+1] <- i[B==u+1] + m*JS[u+1]  # 2
   T[A==u+1] <- i[A==u+1] + m*JT[u+1]  # 3
   
-  return(rbind(
-               cbind(C,S),
-               cbind(T,D)
-               )
-         )
+  force.integer(rbind(
+                      cbind(C,S),
+                      cbind(T,D)
+                      )
+                )
 }
 
-"is.antimagic" <- function(m, give.answers=FALSE, FUN=sum){
+"is.antimagic" <- function(m, give.answers=FALSE, func=sum){
   if (is.list(m)) {
-    return(sapply(m, match.fun(sys.call()[[1]])))
+    return(sapply(m, match.fun(sys.call()[[1]]),
+                  give.answers=give.answers,
+                  func=func
+                  ))
   }
-  jj <- allsums(m, FUN=FUN)
+  jj <- allsums(m, func=func)
   answer <- all(diff(sort(c(jj$rowsums , jj$colsums)))==1)
   if(give.answers){
     return(c(answer=answer , jj))
@@ -1313,11 +1343,14 @@ function (a, i)
   }
 }
 
-"is.totally.antimagic" <- function(m, give.answers=FALSE, FUN=sum){
+"is.totally.antimagic" <- function(m, give.answers=FALSE, func=sum){
   if (is.list(m)) {
-    return(sapply(m, match.fun(sys.call()[[1]])))
+    return(sapply(m, match.fun(sys.call()[[1]]),
+                  give.answers=give.answers,
+                  func=func
+                  ))
   }
-  jj <- allsums(m, FUN=FUN)
+  jj <- allsums(m, func=func)
   answer <-
     all(diff(sort(c(
                     jj$rowsums  ,
@@ -1368,7 +1401,7 @@ function (a, i)
 
 "is.incidence" <- function(a, include.improper){ 
   f <- function(x){ all(x==0 | x==1) & sum(x)==1 }
-  out <- is.semimagichypercube(a, FUN=f, boolean=TRUE)
+  out <- is.semimagichypercube(a, func=f, boolean=TRUE)
   if(include.improper){
     return(out|is.incidence.improper(a))
   } else {
@@ -1381,7 +1414,7 @@ function (a, i)
     (all(x==0 | x==1 | x==(-1)) & sum(x)==1) |
     (all(x==0 | x==1)           & sum(x)==1)
   }
-  is.semimagichypercube(a, FUN=f, boolean=TRUE) & (sum(a == -1) == 1)
+  is.semimagichypercube(a, func=f, boolean=TRUE) & (sum(a == -1) == 1)
 }
  
 "unincidence" <- function(a){

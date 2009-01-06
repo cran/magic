@@ -43,7 +43,7 @@ rlatin(n,size=NULL,start=NULL,burnin=NULL)
     \item Function \code{another_latin()} takes a latin square and
     returns a different latin square
     \item Function \code{another_incidence()} takes an incidence array
-    ane ruturns a different incidence array
+    and returns a different incidence array
     \item Function \code{rlatin()} generates a (Markov) sequence of
     random latin squres, arranged in a 3D array.  Argument \code{n}
     specifies how many to generate; argument \code{size} gives the size
@@ -66,7 +66,7 @@ rlatin(n,size=NULL,start=NULL,burnin=NULL)
 
 From Jacobson and Matthew 1996, an \eqn{n\times n}{n-by-n} latin square
 LS is equivalent to an \eqn{n\times n\times n}{n-by-n-by-n} array A with
-entries 0 or 1; the dimensions of A are identified with teh rows,
+entries 0 or 1; the dimensions of A are identified with the rows,
 columns and symbols of LS; a 1 appears in cell \eqn{(r,c,s)} of A iffi
 the symbol \eqn{s} appears in row \eqn{r}, column \eqn{s} of LS.
 Jacobson and Matthew call this an \dfn{incidence cube}.

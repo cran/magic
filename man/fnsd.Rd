@@ -12,7 +12,7 @@ fnsd(a,n)
 }
 \arguments{
   \item{a}{An array}
-  \item{n}{Integer.  Return the first \code{n} nonsingleton dimensions.}
+  \item{n}{Integer.  Return the first \code{n} nonsingleton dimensions}
 }
 \value{
   Returns an integer vector with elements in the range \code{1} to
@@ -21,6 +21,9 @@ fnsd(a,n)
 \author{Robin K. S. Hankin}
 \note{
   Treats zero-extent dimensions as singletons.
+
+  Case \code{n=0} now treated sensibly (returns a zero-length vector).
+  
   }
 \seealso{\code{\link{arev}}}
 \examples{

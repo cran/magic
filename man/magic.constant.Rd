@@ -11,7 +11,7 @@ magic.constant(n,d=2,start=1)
 \arguments{
   \item{n}{Order of the square}
   \item{d}{Dimension of square, defaulting to \code{d=2} (a square)}
-  \item{start}{Start value of square.  Common values are 0 and 1.}
+  \item{start}{Start value of square.  Common values are 0 and 1}
 }
 \details{
   If \code{n} is an integer, interpret this as the order of the square

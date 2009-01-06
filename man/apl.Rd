@@ -19,13 +19,13 @@ apltake(a, b) <- value
   \item{a}{Array}
   \item{b}{Vector of number of indices to take/drop.  Length of \code{b}
     should not exceed \code{length(dim(a))}; if it does, an error is
-    returned.} 
+    returned} 
   \item{give.indices}{Boolean, with default \code{FALSE} meaning to
     return the appropriate subset of array \code{a}, and \code{TRUE}
     meaning to return the list of the selected elements in each of the
     dimensions.  Setting to \code{TRUE} is not really intended for the
     end-user, but is used in the code of \code{apltake<-()} and
-    \code{apldrop<-()}.} 
+    \code{apldrop<-()}} 
   \item{value}{elements to replace}
 }
 \details{
