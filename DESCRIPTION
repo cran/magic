@@ -1,5 +1,5 @@
 Package: magic
-Version: 1.4-2
+Version: 1.4-3
 Date: 6 Jan 2009
 Title: create and investigate magic squares
 Author: Robin K. S. Hankin
@@ -18,4 +18,4 @@ Description: a collection of efficient, vectorized algorithms for the
  was just for statistics".
 Maintainer: Robin K. S. Hankin <rksh1@cam.ac.uk>
 License: GPL-2
-Packaged: Thu Jan 15 21:24:49 2009; rksh
+Packaged: Tue Jan 20 21:04:20 2009; rksh

@@ -1494,3 +1494,18 @@ function (a, i)
   return(drop(out))
 }
 
+"sylvester" <- function(k){
+  stopifnot(k==round(k))
+  if(k==0){
+    return(matrix(1L,1,1))
+  } else {
+    return(kronecker(Recall(k-1),matrix(c(1L,1L,1L,-1L),2,2)))
+  }
+}
+
+"is.hadamard" <- function(m){
+  is.matrix(m)              &
+  nrow(m)==ncol(m)          &
+  all( (m==1)|(m== -1))     &
+  all(crossprod(m)==diag(nrow(m),nrow=nrow(m)))
+}

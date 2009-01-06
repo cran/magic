@@ -11,8 +11,8 @@ is.ok(vec, n=length(vec), d=2)
 \arguments{
   \item{vec}{Vector to be tested}
   \item{n}{Order of square or hypercube.  Default assumes order is equal
-    to length of \code{vec}.}
-\item{d}{Dimension of square or hypercube.  Default corresponds to a square.}
+    to length of \code{vec}}
+\item{d}{Dimension of square or hypercube.  Default of 2 corresponds to a square}
 }
 \author{Robin K. S. Hankin}
 \examples{

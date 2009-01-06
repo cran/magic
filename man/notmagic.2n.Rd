@@ -15,7 +15,7 @@ notmagic.2n(m)
 \author{Robin K. S. Hankin}
 \note{This took me a whole evening to code up.  And I was quite pleased
   with the final vectorized form: it matches Andrews's (8 by 8) example
-  square exactly.  What a crock.}
+  square exactly.  What a crock}
 \examples{
   notmagic.2n(4)
   is.magic(notmagic.2n(4))
