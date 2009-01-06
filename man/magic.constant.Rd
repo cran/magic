@@ -1,17 +1,17 @@
 \name{magic.constant}
 \alias{magic.constant}
-\title{Magic constant of a magic square}
+\title{Magic constant of a magic square or hypercube}
 \description{
   Returns the magic constant: that is, the common sum for all rows,
-  columns and (broken) diagonals of a magic square
+  columns and (broken) diagonals of a magic square or hypercube
 }
 \usage{
 magic.constant(n,d=2,start=1)
 }
 \arguments{
-  \item{n}{Order of the square}
-  \item{d}{Dimension of square, defaulting to \code{d=2} (a square)}
-  \item{start}{Start value of square.  Common values are 0 and 1}
+  \item{n}{Order of the square or hypercube}
+  \item{d}{Dimension of hypercube, defaulting to \code{d=2} (a square)}
+  \item{start}{Start value.  Common values are 0 and 1}
 }
 \details{
   If \code{n} is an integer, interpret this as the order of the square

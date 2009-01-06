@@ -62,9 +62,15 @@ stopifnot(sapply(1:n,function(i){is.magichypercube(magiccube.2np1( i))}))
 ## is transf(a,0) == a?
 stopifnot(sapply(3:n , function(i){a <- magic(i);identical(a,transf(a,0))}))
 
+
+## NB: following two tests *removed* following redefinition of
+## "equal", that is eq(), or %eq%.  The _old_ definition was to put
+## the square into Frenicle standard form, then compare.  The _new_
+## definition considers the square directly.
+
 ## is transf(a,X) equal (ie eq()) to "a" for different X?
-stopifnot(sapply(3:n , function(i){a <- magic(i);eq(a,transf(a,i%%8  ))}))
-stopifnot(sapply(3:n , function(i){a <- magic(i);eq(a,transf(a,i%%8+1))}))
+#stopifnot(sapply(3:n , function(i){a <- magic(i);eq(a,transf(a,i%%8  ))}))
+#stopifnot(sapply(3:n , function(i){a <- magic(i);eq(a,transf(a,i%%8+1))}))
 
 
 data(magiccubes)
@@ -294,3 +300,19 @@ f(magic(13),3)
 f(magic(14),4)
 
 
+
+
+#Some multiplicative magic square tests; see Javier Cilleruelo and
+#Florian Luca 2010, "On multiplicative magic squares", The Electronic
+#Journal of Combinatorics", vol 17. #N8
+
+f <- function(n,m){
+  matrix(c(
+           (n+2)*(m+0), (n+3)*(m+3), (n+1)*(m+2), (n+0)*(m+1),
+           (n+1)*(m+1), (n+0)*(m+2), (n+2)*(m+3), (n+3)*(m+0),
+           (n+0)*(m+3), (n+1)*(m+0), (n+3)*(m+1), (n+2)*(m+2),
+           (n+3)*(m+2), (n+2)*(m+1), (n+0)*(m+0), (n+1)*(m+3)
+           ),nrow=4,ncol=4,byrow=TRUE)
+}
+           
+stopifnot(all(apply(as.matrix(expand.grid(seq_len(n),seq_len(n))),1,function(x){is.magic(f(x[1],x[2]),func=prod)})))

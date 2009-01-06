@@ -19,12 +19,15 @@ sam(m, u, A=NULL, B=A)
   In Gray's terminology, \code{sam(m,n)} produces a
   \eqn{SAM(2m,2u+1,0)}.
 
-  The method is not vectorized.  
+  The method is not vectorized.
+
+  To test for these properties, use functions such as
+  \code{is.antimagic()}, documented under \code{is.magic.Rd}.
 }
 \references{
-  I. D. Gray and J. A. MacDougall 2006.  \emph{Sparse anti-magic squares
-    and vertex-magic labelings of bipartite graphs}, Discrete
-  Mathematics, volume 306, pp2878-2892
+  I. D. Gray and J. A. MacDougall 2006.  \dQuote{Sparse anti-magic squares
+    and vertex-magic labelings of bipartite graphs}, \emph{Discrete
+  Mathematics}, volume 306, pp2878-2892
 }
 \author{Robin K. S. Hankin}
 \seealso{\code{\link{magic}},\code{\link{is.magic}}}

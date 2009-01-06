@@ -5,6 +5,8 @@
 \alias{is.semimagic}
 \alias{is.semimagic.default}
 \alias{is.associative}
+\alias{is.regular}
+\alias{is.ultramagic}
 \alias{is.normal}
 \alias{is.sparse}
 \alias{is.mostperfect}
@@ -78,12 +80,14 @@ is.stam(m)
     \item A \dfn{sparse} matrix is one whose nonzero entries are
     consecutive integers, starting at 1.
     
-    \item An \dfn{associative square} is a magic square in which
+    \item An \dfn{associative square} (also \dfn{regular square}) is a magic square in which
     \eqn{a_{i,j}+a_{n+1-i,n+1-j}=n^2+1}{a[i,j]+a[n+1-i,n+1-j]=n^2+1}.
     Note that an associative semimagic square is magic; see also
     \code{is.square.palindromic()}.  The definition extends to magic
     hypercubes: a hypercube \code{a} is associative if \code{a+arev(a)}
     is constant.
+
+    \item An \dfn{ultramagic square} is pandiagonal and associative.
     
     \item A \dfn{latin square} of size \eqn{n\times n}{n-by-n} is one in
     which each column and each row comprises the integers 1 to n (not
@@ -96,7 +100,7 @@ is.stam(m)
     \item An \dfn{antimagic square} is one whose row sums and column
     sums are consecutive integers; a \dfn{totally antimagic square} is
     one whose row sums, column sums, and two unbroken diagonals are
-    consecutiveintegers.  Observet that an antimagic square is not
+    consecutiveintegers.  Observe that an antimagic square is not
     necessarily totally antimagic, and vice-versa.
 
     \item A square is \dfn{sam} (or \dfn{SAM}) if it is sparse and
@@ -134,9 +138,13 @@ is.stam(m)
   \code{prod()}, the product will be returned, and so on.  There are
   many choices for this argument that produce interesting tests;
   consider \code{func=max}, for example.  With this, a \dQuote{magic}
-  square is one whose row, sum and (leading) diagonals have identical
+  square is one whose row, sum and (unbroken) diagonals have identical
   maxima.  Thus \code{diag(5)} is magic with respect to \code{max()},
   but \code{diag(6)} isn't.
+
+  Argument \code{boolean} is designed for use with non-default values
+  for the \code{func} argument; for example, a latin square is semimagic
+  with respect to \code{func=function(x){all(diff(sort(x))==1)}}.
     
   Function \code{is.magic()} is vectorized; if a list is supplied, the
   defaults are assumed.
@@ -144,11 +152,12 @@ is.stam(m)
 \references{\url{http://mathworld.wolfram.com/MagicSquare.html}}
 \author{Robin K. S. Hankin}
   
-\seealso{\code{\link{minmax}},\code{\link{is.perfect}},\code{\link{is.semimagichypercube}}}
+\seealso{\code{\link{minmax}},\code{\link{is.perfect}},\code{\link{is.semimagichypercube}},\code{\link{sam}}}
 \examples{
 is.magic(magic(4))
 
-is.magic(diag(9),func=max)  #should be TRUE
+is.magic(diag(7),func=max)  # TRUE
+is.magic(diag(8),func=max)  # FALSE
 
 stopifnot(is.magic(magic(3:8)))
 

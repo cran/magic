@@ -20,7 +20,7 @@ allsubhypercubes(a)
   \code{jj[9]} is \code{"n-i+1,i,i,"}; its value is a square matrix.  The
   columns of \code{jj[9]} may be recovered by \code{a[n-i+1,i,i,]}
   with \eqn{i=1\ldots n}{i=1...n} (\strong{NB}: that is,
-  \code{rbind(a[n-1+1,1,1,],
+  jj[[9]] == \code{cbind(a[n-1+1,1,1,],
   a[n-2+1,2,2,], a[n-3+1,3,3,], a[n-4+1,4,4,])} where \code{n=4}).
 
   The list does not include the whole array.

@@ -1,6 +1,8 @@
 \name{is.magichypercube}
 \alias{is.semimagichypercube}
 \alias{is.magichypercube}
+\alias{is.nasik}
+\alias{is.alicehypercube}
 \alias{is.perfect}
 \alias{is.diagonally.correct}
 \alias{is.latinhypercube}
@@ -14,12 +16,17 @@ is.diagonally.correct(a, give.answers = FALSE, func=sum, boolean=FALSE)
 is.magichypercube(a, give.answers = FALSE, func=sum, boolean=FALSE) 
 is.perfect(a, give.answers = FALSE, func=sum, boolean=FALSE)
 is.latinhypercube(a, give.answers=FALSE)
+is.alicehypercube(a,ndim,give.answers=FALSE, func=sum, boolean=FALSE)
 }
 \arguments{
   \item{a}{The hypercube (array) to be tested}
   \item{give.answers}{Boolean, with \code{TRUE} meaning to also return
     the sums}
   \item{func}{Function to be applied across each dimension}
+  \item{ndim}{In \code{is.alicehypercube()}, dimensionality of
+    subhypercube to take sums over.  Thus \code{ndim=1} corresponds to a
+    conventional semimagichypercube and \code{ndim=2} corresponds to
+    each 2d subhypercube (ie each square)  having the same sum}
   \item{boolean}{Boolean, with \code{TRUE} meaning that the hypercube is
     deemed magic, semimagic, etc, if all applications of \code{func}
     evaluate to \code{TRUE}.  If \code{boolean} is \code{FALSE}, the
@@ -59,17 +66,24 @@ is.latinhypercube(a, give.answers=FALSE)
     specifying a function other than \code{sum()}, criteria other than
     the diagonals returning the correct sum may be tested.
 
+    \item An \dfn{Alice hypercube} is a different generalization of a
+    semimagic square to higher dimensions.  A semimagic hypercube has
+    all (one-dimensional) lines summing correctly.  An Alice hypercube
+    has all \code{ndim}-dimensional hyperplanes summing correctly.  Thus
+    \code{is.alicehypercube(a,1)} corresponds to a regular semimagic
+    hypercube; \code{is.alicehypercube(a,2)} corresponds to all
+    2d hyperplanes (ie squares) having the same sum.
+    
     \item A \dfn{perfect magic hypercube} (use \code{is.perfect()}) is
     a magic hypercube with all nonbroken diagonals summing correctly.
     This is a seriously restrictive requirement for high dimensional
     hypercubes.  As yet, this function does not take a
     \code{give.answers} argument.
 
-    \item A \dfn{pandiagonal magic hypercube} (or sometimes just a
-    \dfn{perfect hypercube}) is a semimagic hypercube with all
-    diagonals, including broken diagonals, summing correctly.  This is
-    not implemented.
-  }
+    \item A \dfn{pandiagonal magic hypercube}, also \dfn{Nasik
+    hypercube} (or sometimes just a \dfn{perfect hypercube}) is a
+    semimagic hypercube with all diagonals, including broken diagonals,
+    summing correctly.  This is not implemented.  }
 
   The terminology in this area is pretty confusing.  
   
@@ -188,6 +202,9 @@ all(sapply(1:sum(jj==2),f))
 
 #but this is NOT enough to ensure that it is pandiagonal (but I
 #think hendricks is pandiagonal).
+
+
+is.alicehypercube(magichypercube.4n(1,d=5),4,give.answers=TRUE)
 
 }
 \keyword{array}
