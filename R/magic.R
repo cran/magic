@@ -80,7 +80,7 @@ function (a)
 }
 
 "allsums" <-
-function (m, func = NULL) 
+function (m, func = NULL, ...) 
 {
     n <- nrow(m)
     if(is.null(func)){
@@ -88,14 +88,14 @@ function (m, func = NULL)
       colsums <- colSums(m)
       func <- sum
     } else {
-      rowsums <- apply(m, 1, FUN=func)
-      colsums <- apply(m, 2, FUN=func)
+      rowsums <- apply(m, 1, FUN=func, ...)
+      colsums <- apply(m, 2, FUN=func, ...)
     }
     f1 <- function(i) {
-        func(diag.off(m, i, nw.se = TRUE))
+        func(diag.off(m, i, nw.se = TRUE), ...)
     }
     f2 <- function(i) {
-        func(diag.off(m, i, nw.se = FALSE))
+        func(diag.off(m, i, nw.se = FALSE), ...)
     }
     majors <- sapply(0:(n - 1), FUN=f1)
     minors <- sapply(0:(n - 1), FUN=f2)
@@ -420,7 +420,7 @@ function(m,dir=rep(1,length(dim(m))))
 }
 
 "is.diagonally.correct" <-
-function (a, give.answers = FALSE, func = sum, boolean = FALSE) 
+function (a, give.answers = FALSE, func = sum, boolean = FALSE, ...) 
 {
     if (!minmax(dim(a))) {
         stop("only cubes of equal dimensions allowed")
@@ -432,7 +432,7 @@ function (a, give.answers = FALSE, func = sum, boolean = FALSE)
         (dir > 0) * (1:n) + (dir < 0) * (n:1)
     }
     g <- function(jj) {
-        func(a[sapply(jj, f)])
+        func(a[sapply(jj, f)], ...)
     }
     ans <- expand.grid(rep(list(b),d))
     diag.sums <- apply(ans, 1, g)
@@ -505,12 +505,12 @@ function (m, give.answers = FALSE, func = sum,  boolean = FALSE)
 }
 
 "is.magichypercube" <-
-function (a, give.answers = FALSE, func = sum, boolean = FALSE) 
+function (a, give.answers = FALSE, func = sum, boolean = FALSE, ...) 
 {
     diag.sums <- is.diagonally.correct(a, give.answers = TRUE, 
-        func = func, boolean = boolean)$diag.sums
+        func = func, boolean = boolean, ...)$diag.sums
     jj.semi <- is.semimagichypercube(a, give.answers = TRUE, 
-        func = func, boolean = boolean)
+        func = func, boolean = boolean, ...)
     answer <- minmax(diag.sums) & jj.semi$answer
     if (give.answers) {
         return(list(answer = answer, rook.sums = jj.semi$rook.sums, 
@@ -646,11 +646,11 @@ function(m)
 }
   
 "is.semimagichypercube" <-
-function (a, give.answers = FALSE, func = sum, boolean = FALSE) 
+function (a, give.answers = FALSE, func = sum, boolean = FALSE, ...) 
 {
     d <- length(dim(a))
     f <- function(i) {
-        apply(a, (1:d)[-i], FUN=func)
+        apply(a, (1:d)[-i], FUN=func, ...)
     }
     jj <- sapply(1:d, f)
     if (minmax(dim(a))) {
@@ -1038,7 +1038,7 @@ function (x, tol=1e-6)
     if(is.integer(x)){
       return(identical(max(x), min(x)))
     }
-    if(is.real(x)){
+    if(is.double(x)){
       return(abs(max(x)-min(x))/max(abs(x)) < tol)
     } else {
       return(

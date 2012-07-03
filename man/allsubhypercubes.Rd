@@ -35,6 +35,10 @@ allsubhypercubes(a)
 
   On my 256MB Linuxbox, \code{allsubhypercubes()} cannot cope with
   \code{d} as high as 5, for \code{n=4}.  Heigh ho.
+
+  The term \dQuote{subhypercube} does not include diagonally oriented
+  entities at \code{is.magichypercube}.  But it does here.
+  
   }
 \seealso{\code{\link{is.perfect}}}
 \examples{

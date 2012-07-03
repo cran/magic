@@ -6,13 +6,14 @@
   a putative magic square.
 }
 \usage{
-allsums(m,func=NULL)
+allsums(m,func=NULL, ...)
 }
 \arguments{
   \item{m}{The square to be tested}
   \item{func}{Function, with default \code{NULL} interpreted
     as\code{sum()}, to be applied to the square rowwise, columnwise, and
     diagonalwise}
+  \item{...}{Further arguments passed to \code{func()}}
 }
 \value{
   Returns a list of four elements.  In the following, \dQuote{sums}

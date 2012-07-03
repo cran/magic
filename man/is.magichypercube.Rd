@@ -11,9 +11,9 @@
 Returns \code{TRUE} if a hypercube is semimagic, magic, perfect
 }
 \usage{
-is.semimagichypercube(a, give.answers=FALSE, func=sum, boolean=FALSE)
-is.diagonally.correct(a, give.answers = FALSE, func=sum, boolean=FALSE) 
-is.magichypercube(a, give.answers = FALSE, func=sum, boolean=FALSE) 
+is.semimagichypercube(a, give.answers=FALSE, func=sum, boolean=FALSE, ...)
+is.diagonally.correct(a, give.answers = FALSE, func=sum, boolean=FALSE, ...) 
+is.magichypercube(a, give.answers = FALSE, func=sum, boolean=FALSE, ...) 
 is.perfect(a, give.answers = FALSE, func=sum, boolean=FALSE)
 is.latinhypercube(a, give.answers=FALSE)
 is.alicehypercube(a,ndim,give.answers=FALSE, func=sum, boolean=FALSE)
@@ -24,13 +24,13 @@ is.alicehypercube(a,ndim,give.answers=FALSE, func=sum, boolean=FALSE)
     the sums}
   \item{func}{Function to be applied across each dimension}
   \item{ndim}{In \code{is.alicehypercube()}, dimensionality of
-    subhypercube to take sums over.  Thus \code{ndim=1} corresponds to a
-    conventional semimagichypercube and \code{ndim=2} corresponds to
-    each 2d subhypercube (ie each square)  having the same sum}
+    subhypercube to take sums over.  See the details section}
   \item{boolean}{Boolean, with \code{TRUE} meaning that the hypercube is
     deemed magic, semimagic, etc, if all applications of \code{func}
     evaluate to \code{TRUE}.  If \code{boolean} is \code{FALSE}, the
-    hypercube is magic etc if all applications of \code{func} are identical}
+    hypercube is magic etc if all applications of \code{func} are
+    identical}
+  \item{...}{Further arguments passed to \code{func()}}
 }
 \details{
   (Although apparently non-standard, here a hypercube is defined to have
@@ -67,12 +67,28 @@ is.alicehypercube(a,ndim,give.answers=FALSE, func=sum, boolean=FALSE)
     the diagonals returning the correct sum may be tested.
 
     \item An \dfn{Alice hypercube} is a different generalization of a
-    semimagic square to higher dimensions.  A semimagic hypercube has
-    all (one-dimensional) lines summing correctly.  An Alice hypercube
-    has all \code{ndim}-dimensional hyperplanes summing correctly.  Thus
+    semimagic square to higher dimensions.  It is named for A. M. Hankin
+    who originally suggested it.
+
+    A semimagic hypercube has all one-dimensional subhypercubes (ie
+    lines) summing correctly.  An Alice hypercube has all
+    \code{ndim}-dimensional subhypercubes summing correctly, where
+    \code{ndim} is a fixed integer.
+
+    For example, if \code{a} is four-dimensional with dimension
+    \eqn{5\times 5\times 5\times 5}{5x5x5x5} then
     \code{is.alicehypercube(a,1)} corresponds to a regular semimagic
-    hypercube; \code{is.alicehypercube(a,2)} corresponds to all
-    2d hyperplanes (ie squares) having the same sum.
+    hypercube; \code{is.alicehypercube(a,2)} corresponds to all 2d
+    subhypercubes (ie all \eqn{6\times 25=150}{6x25=150} of the
+    \eqn{5\times 5}{5x5} squares, for example \code{a[,2,4,]} and
+    \code{a[1,1,,]}) having the same sum; and
+    \code{is.alicehypercube(a,3)} means that all 3d subhypercubes (ie
+    all \eqn{4\times 5=20}{4x5=20} of the \eqn{5\times 5\times 5}{5x5x5}
+    cubes, for example \code{a[,,1,]} and \code{a[4,,,]}) having the
+    same sum.
+
+    A semimagic hypercube is an Alice hypercube for any value of
+    \code{ndim}.
     
     \item A \dfn{perfect magic hypercube} (use \code{is.perfect()}) is
     a magic hypercube with all nonbroken diagonals summing correctly.
@@ -131,12 +147,16 @@ is.alicehypercube(a,ndim,give.answers=FALSE, func=sum, boolean=FALSE)
 }
 \author{Robin K. S. Hankin}
 \note{
-Note that not all subhypercubes are necessarily magic! (for example,
-consider a 5-dimensional magic hypercube \code{a}.  The square \code{b}
-defined by \code{a[1,1,1,,]} might not be magic: the diagonals of
-\code{b} are not covered by the definition of a magic hypercube).  Some
-subhypercubes of a magic hypercube are not even semimagic: see below for
-an example.
+
+On this page, \dQuote{subhypercube} is restricted to
+rectangularly-oriented subarrays; see the note at \code{subhypercubes}.
+  
+Not all subhypercubes of a magic hypercube are necessarily magic! (for
+example, consider a 5-dimensional magic hypercube \code{a}.  The square
+\code{b} defined by \code{a[1,1,1,,]} might not be magic: the diagonals
+of \code{b} are not covered by the definition of a magic hypercube).
+Some subhypercubes of a magic hypercube are not even semimagic: see
+below for an example.
 
 Even in three dimensions, being perfect is pretty bad.  Consider a
 \eqn{5\times5\times 5}{5x5x5} (ie three dimensional), cube.  Say
@@ -168,11 +188,11 @@ is.perfect(magichypercube.4n(1,d=4))
 a <- abind(magiccube.2np1(1),magiccube.2np1(1),along=2)
 is.semimagichypercube(a,g=TRUE)$rook.sums
 
-#argument boolean can be confusing:
-zero <- array(0,rep(3,4))
-is.semimagichypercube(a,func=is.ok,boolean=FALSE)  # TRUE, because all
-                                                  # applications of is.ok()
-                                                  # return the same value!
+# is.semimagichypercube() takes further arguments:
+mymax <- function(x,UP){max(c(x,UP))}
+not_mag  <- array(1:81,rep(3,4))
+is.semimagichypercube(not_mag,func=mymax,UP=80)  # FALSE
+is.semimagichypercube(not_mag,func=mymax,UP=81)  # TRUE
 
 
 a2 <- magichypercube.4n(m=1,d=4)
