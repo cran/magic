@@ -62,8 +62,12 @@ function (a)
         n <- dim(a)[1]
         execute.string <- paste("jj <- a[", string, "]", collapse = "")
         eval(parse(text = execute.string))
-        d <- log(length(jj))/log(n)
-        return(array(jj, rep(n, d)))
+        d <- round(log(length(jj))/log(n))
+        if(d > 0.5){
+          return(array(jj, rep(n, d)))
+        } else {
+          return(jj)
+        }
     }
     dummy <- function(p) {
         x <- sapply(1:n, f, a = a, string = jj[p], simplify = FALSE)
