@@ -1038,6 +1038,7 @@ function (x, tol=1e-6)
     if(is.integer(x)){
       return(identical(max(x), min(x)))
     }
+    if(all(x==0)){return(TRUE)}   #special dispensation for all zeros
     if(is.double(x)){
       return(abs(max(x)-min(x))/max(abs(x)) < tol)
     } else {
@@ -1405,6 +1406,32 @@ function (a, i)
   }
 }
 
+"is.heterosquare" <- function(m, func = sum){
+  if (is.list(m)) {
+    return(sapply(m, match.fun(sys.call()[[1]]), func = func))
+  }
+  sums <- allsums(m, func = func)
+  jj <- c(sums$rowsums, sums$colsums)
+  if(all(diff(sort(jj)))>0){
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
+
+"is.totally.heterosquare" <- function(m, func = sum){
+  if (is.list(m)) {
+    return(sapply(m, match.fun(sys.call()[[1]]), func = func))
+  }
+  sums <- allsums(m, func = func)
+  jj <- c(sums$rowsums, sums$colsums, sums$majors[1], sums$minors[1])
+  if(all(diff(sort(jj)))>0){
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
+  
 "is.sparse" <- function(m){
   if (is.list(m)) {
     return(sapply(m, match.fun(sys.call()[[1]])))
@@ -1668,3 +1695,28 @@ function (a, i)
 "%lt%" <- function (m1, m2) { return(lt(m1, m2)) }
 "%ge%" <- function (m1, m2) { return(ge(m1, m2)) }
 "%le%" <- function (m1, m2) { return(le(m1, m2)) }
+
+
+panmagic.6npm1 <- function(n){
+   if (length(n) > 1) {
+        return(sapply(n, match.fun(sys.call()[[1]])))
+    }
+  apx <- kronecker(t(seq(from=0,by=n-2,len=n)),rep(1,n)) + kronecker(1:n,t(rep(1,n)))
+  jj <- process(apx%%n, n)
+  return(force.integer(jj+n*t(jj)-n))
+}
+
+panmagic.6np1 <- function(m){ panmagic.6npm1(n=6*m+1)}
+panmagic.6nm1 <- function(m){ panmagic.6npm1(n=6*m-1)}
+
+panmagic.4n <- function(m){ # returns a square of size [4n x 4n]
+  if (length(m) > 1) {
+    return(sapply(m, match.fun(sys.call()[[1]])))
+  }
+  jj <- kronecker(rep(1,m*2),rbind(1:(2*m), (4*m):(2*m+1)))
+  jj <- cbind(jj,ashift(jj,v=c(1,0)))
+  return(force.integer(jj + 4*m*(arot(jj)-1)))
+}
+
+
+  

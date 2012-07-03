@@ -1,7 +1,12 @@
 library(magic)
 n <- 10
 
-# first test magic() for magicness, standardness, and normality for magic(3)..magic(n):
+
+# first check minmax (NB: includes checking all zeros):
+stopifnot(all(sapply(0:10,function(i){minmax(rep(i,9))})))
+
+
+# test magic() for magicness, standardness, and normality for magic(3)..magic(n):
 stopifnot(is.magic   (magic(3:n)))
 stopifnot(is.standard(magic(3:n)))
 stopifnot(is.normal  (magic(3:n)))
@@ -316,3 +321,8 @@ f <- function(n,m){
 }
            
 stopifnot(all(apply(as.matrix(expand.grid(seq_len(n),seq_len(n))),1,function(x){is.magic(f(x[1],x[2]),func=prod)})))
+
+
+
+stopifnot(all(sapply(panmagic.6np1(seq_len(n)),is.panmagic)))
+stopifnot(all(sapply(panmagic.6np1(seq_len(n)),is.panmagic)))

@@ -16,6 +16,7 @@ panmagic.4(vals = 2^(0:3))
 
 \references{\url{http://www.grogono.com/magic/index.php}}
 \author{Robin K. S. Hankin}
+\seealso{\code{\link{panmagic.6npm1}}}
 \examples{
 panmagic.4()
 panmagic.4(2^c(1,3,2,0))

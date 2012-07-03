@@ -2,7 +2,7 @@
 \alias{apad}
 \title{Pad arrays}
 \description{
-Multidimensional pad for arrays of arbitrary dimension
+Generalized padding for arrays of arbitrary dimension
 }
 \usage{
 apad(a, l, e = NULL, method = "ext", post = TRUE)

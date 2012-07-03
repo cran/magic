@@ -15,6 +15,8 @@
 \alias{is.latin}
 \alias{is.antimagic}
 \alias{is.totally.antimagic}
+\alias{is.heterosquare}
+\alias{is.totally.heterosquare}
 \alias{is.sam}
 \alias{is.stam}
 \title{Various tests for the magicness of a square}
@@ -38,6 +40,8 @@ is.bree.correct(m,give.answers=FALSE)
 is.latin(m,give.answers=FALSE)
 is.antimagic(m, give.answers = FALSE, func=sum) 
 is.totally.antimagic(m, give.answers = FALSE, func=sum)
+is.heterosquare(m, func=sum) 
+is.totally.heterosquare(m, func=sum)
 is.sam(m)
 is.stam(m)
 }
@@ -103,6 +107,10 @@ is.stam(m)
     consecutiveintegers.  Observe that an antimagic square is not
     necessarily totally antimagic, and vice-versa.
 
+    \item A \dfn{heterosquare} has all rowsums and column sums
+    distinct; a \dfn{totally heterosquare} [NB nonstandard terminology]
+    has all rowsums, columnsums, and two long diagonals distinct.
+    
     \item A square is \dfn{sam} (or \dfn{SAM}) if it is sparse and
     antimagic; it is  \dfn{stam} (or \dfn{STAM}) if it is sparse and
     totally antimagic.  See documentation at \code{SAM}.

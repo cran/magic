@@ -2,7 +2,7 @@
 \alias{magic.prime}
 \title{Magic squares prime order}
 \description{
-Produces magic squares of order using the standard method
+Produces magic squares of prime order using the standard method
 }
 \usage{
 magic.prime(n,i=2,j=3)
@@ -14,7 +14,7 @@ magic.prime(n,i=2,j=3)
 }
 \details{
 Claimed to work for prime order, but I've tried it (with the defaults
-for \code{i} and \code{j}) for many  integers of the
+for \code{i} and \code{j}) for many composite integers of the
 form \eqn{6n+1}{6n+1} and \eqn{6n-1}{6n-1} and found no exceptions;
 indeed, they all seem to be panmagic.  It is not clear to me 
 when the process works and when it doesn't.  
