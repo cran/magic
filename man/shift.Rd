@@ -18,7 +18,7 @@ ashift(a, v=rep(1,length(dim(a))))
   \item{v}{Vector of numbers to be shifted in each dimension, with
     default value corresponding to \code{shift()}ing each dimension by 1
     unit.  If the length of \code{v} is less than \code{length(dim(a))},
-    it is padded with zeroes (thus a scalar value of \code{i} indicates
+    it is padded with zeros (thus a scalar value of \code{i} indicates
     that the first dimension is to be shifted by \code{i} units)}
 }
 \details{

@@ -68,24 +68,30 @@ is.alicehypercube(a,ndim,give.answers=FALSE, func=sum, boolean=FALSE)
 
     \item An \dfn{Alice hypercube} is a different generalization of a
     semimagic square to higher dimensions.  It is named for A. M. Hankin
-    who originally suggested it.
+    (\dQuote{Alice}), who originally suggested it.
 
     A semimagic hypercube has all one-dimensional subhypercubes (ie
-    lines) summing correctly.  An Alice hypercube has all
-    \code{ndim}-dimensional subhypercubes summing correctly, where
-    \code{ndim} is a fixed integer.
+    lines) summing correctly.  An Alice hypercube is one in which all
+    \code{ndim}-dimensional subhypercubes have the same sum, where
+    \code{ndim} is a fixed integer argument.  Thus, if \code{a} is a
+    hypercube of size \eqn{n^d}{n^d}, \code{is.alicehypercube(a,ndim)}
+    returns \code{TRUE} if all \code{n^{d-ndim}} subhypercubes have the
+    same sum.
 
     For example, if \code{a} is four-dimensional with dimension
     \eqn{5\times 5\times 5\times 5}{5x5x5x5} then
-    \code{is.alicehypercube(a,1)} corresponds to a regular semimagic
-    hypercube; \code{is.alicehypercube(a,2)} corresponds to all 2d
-    subhypercubes (ie all \eqn{6\times 25=150}{6x25=150} of the
-    \eqn{5\times 5}{5x5} squares, for example \code{a[,2,4,]} and
-    \code{a[1,1,,]}) having the same sum; and
+    \code{is.alicehypercube(a,1)} is \code{TRUE} if and only if \code{a}
+    is a semimagic hypercube: all \eqn{{4\choose 1}5^3=500}{4*5^3=500}
+    one-dimensional subhypercubes have the same sum.  Then
+    \code{is.alicehypercube(a,2)} is \code{TRUE} if all 2-dimensional
+    subhypercubes (ie all \eqn{{4\choose 2}\times 5^2=150}{6x5^2=150} of
+    the \eqn{5\times 5}{5x5} squares, for example \code{a[,2,4,]} and
+    \code{a[1,1,,]}) have the same sum.  Then
     \code{is.alicehypercube(a,3)} means that all 3d subhypercubes (ie
-    all \eqn{4\times 5=20}{4x5=20} of the \eqn{5\times 5\times 5}{5x5x5}
-    cubes, for example \code{a[,,1,]} and \code{a[4,,,]}) having the
-    same sum.
+    all \eqn{{4\choose 3}\times 5^1=20}{4x5=20} of the \eqn{5\times
+    5\times 5}{5x5x5} cubes, for example \code{a[,,1,]} and
+    \code{a[4,,,]}) have the same sum.  For any hypercube \code{a},
+    \code{is.alicehypercube(a,dim(a))} returns \code{TRUE}.
 
     A semimagic hypercube is an Alice hypercube for any value of
     \code{ndim}.

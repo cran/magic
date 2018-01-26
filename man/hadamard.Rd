@@ -20,7 +20,7 @@ is.hadamard(m)
   or -1 and whose rows are mutually orthogonal.  
 } 
 \references{
-\dQuote{Hadamard matrix.} \emph{Wikipedia, The Free Encyclopedia.} 19 Jan 2009, 18:21 UTC. 20 Jan 2009 \url{http://en.wikipedia.org/w/index.php?title=Hadamard_matrix&oldid=265119778} 
+\dQuote{Hadamard matrix.} \emph{Wikipedia, The Free Encyclopedia.} 19 Jan 2009, 18:21 UTC. 20 Jan 2009 
 }
 \author{Robin K. S. Hankin}
 \examples{

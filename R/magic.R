@@ -182,7 +182,7 @@ function (a, v=rep(1,length(dim(a))))
     f <- function(i) {
         shift(seq_len(dim(a)[i]), v[i])
     }
-    do.call("[", c(list(a), sapply(seq_along(dim(a)), f, simplify = FALSE)))
+    do.call("[", c(list(a), sapply(seq_along(dim(a)), f, simplify = FALSE),drop=FALSE)) # bug and patch from Andre Mikulec
 }
 
 "as.standard" <-

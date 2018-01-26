@@ -206,6 +206,15 @@ stopifnot(is.semimagichypercube(ashift(magichypercube.4n(1),1:3)))
 stopifnot(is.semimagichypercube(ashift(magichypercube.4n(1,d=5),c(1,2,3,2,1))))
 
 
+# now test bug reported by Andre Mikulec via gmail:
+a1 <- array( 2^(0:5) , 1:3)
+dimnames(a1) <- list(ALPHA = "A", BETA = c("a","b"), GAMMA = c("i","ii","iii"))
+stopifnot(identical(dim(a1),dim(ashift(a1,c(0,1,0)))))
+
+
+
+
+
 zero.extent <- array(0,c(3,0,3,2,3))
 stopifnot(is.standard(zero.extent))
 

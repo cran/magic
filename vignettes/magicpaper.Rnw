@@ -34,11 +34,11 @@ An earlier version of this vignette was published as~\citet{hankin2005}.
 
 \Address{
 Robin K. S. Hankin\\
-University of Cambridge\\
-19 Silver Street\\
-Cambridge \\
-CB3 9EP\\
-E-mail: \email{rksh1@cam.ac.uk}
+AUT University\\
+Auckland\\
+New Zealand\\
+E-mail: \email{hankin.robin@gmail.com}
+
 }
 
 

@@ -10,9 +10,6 @@ of order 3
 \source{
 Originally discovered by Hendricks
 }
-\references{
-  \url{http://members.shaw.ca/hdhcubes/cube_perfect.htm}
-}
 \examples{
 data(magiccubes)
 magiccubes$a1
