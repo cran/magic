@@ -14,14 +14,13 @@ magic.8(...)
 Returns an array of dimensions \code{c(8,8,90)} of which each slice is
 an 8-by-8 magic square.
 }
-\references{\url{http://www.grogono.com/magic/index.php}}
+\references{\url{https://www.grogono.com/magic/index.php}}
 \author{Robin K. S. Hankin}
 \examples{
-\dontrun{
+
 h <- magic.8()
 h[,,1]
-is.magic(h[,,4])
-}
 
+stopifnot(apply(h,3,is.magic))
 }
 \keyword{array}
